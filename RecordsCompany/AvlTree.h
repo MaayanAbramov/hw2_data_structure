@@ -34,6 +34,7 @@ public:
                                        m_ptr_right(nullptr), m_ptr_father(nullptr) {}
         T getData(){return this->m_data;}
     };
+public:
     Node* ptr_main_root;
     AvlTree() : ptr_main_root(nullptr) {}
 

@@ -22,31 +22,27 @@ vector<int> getRecordsStocks();
 int main()
 {
 
-    // Create an instance of Costumer
-    int id = 1; // Example ID
-    int phone = 1234567890; // Example phone number
-    bool isMember = true; // Example membership status
-    Costumer customer(id, phone, isMember);
+    hash_table<Costumer> customerTable;
 
+    // Create some customers
+    Costumer customer1(1, 1234567, true);
+    Costumer customer2(2, 9876543, false);
+    Costumer customer3(3, 5555555, true);
 
-    // Create an instance of hash_table
-    hash_table<Costumer> myHashTable;
+    // Insert customers into the hash table
+    customerTable.insert_to_array(customer1, customer1.get_id());
+    customerTable.insert_to_array(customer2, customer2.get_id());
+    customerTable.insert_to_array(customer3, customer3.get_id());
 
-    // Insert customer into the hash table
-    int key = customer.get_id(); // Example key
-    myHashTable.insert_to_array(customer, key);
-
-    // Find a customer in the hash table
-    Costumer* foundCustomer = myHashTable.find(key);
+    // Find a customer by ID
+    int searchId = 2;
+    Costumer* foundCustomer = customerTable.find(searchId);
     if (foundCustomer != nullptr) {
-        int foundID = foundCustomer->get_id();
-        int foundPhone = foundCustomer->get_phone();
-        bool foundIsMember = foundCustomer->get_is_member();
-        std::cout << "Found customer with ID: " << foundID << ", Phone: " << foundPhone << ", Membership: "
-                  << (foundIsMember ? "Yes" : "No") << std::endl;
+        std::cout << "Customer found: " << *foundCustomer << std::endl;
     } else {
-        std::cout << "Customer with key " << key << " not found." << std::endl;
+        std::cout << "Customer with ID " << searchId << " not found." << std::endl;
     }
+
     /*
     string op;
     RecordsCompany *test_obj = new RecordsCompany();

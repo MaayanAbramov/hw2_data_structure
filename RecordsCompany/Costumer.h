@@ -18,7 +18,7 @@ class Costumer {
 public:
     Costumer(int id, int phone, bool member) : m_c_id(id), m_phone_num(phone), is_member(member), m_expenses(0) {}
     ~Costumer() = default;
-    Costumer(const Costumer& ether) = default;
+    Costumer(const Costumer& other) = default;
     Costumer& operator=(const Costumer& Costumer);
 
     int get_id() const;
