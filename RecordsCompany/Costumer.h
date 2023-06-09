@@ -4,15 +4,19 @@
 
 #ifndef RECORDSCOMPANY_COSTUMER_H
 #define RECORDSCOMPANY_COSTUMER_H
-#include "recordsCompany.h"
+//#include "recordsCompany.h"
+#include <iostream>
 using namespace std;
 
 class Costumer {
     int m_c_id;
     int m_phone_num;
     bool is_member;
+    int m_expenses;
+
+
 public:
-    Costumer(int id, int phone, bool member) : m_c_id(id), m_phone_num(phone), is_member(member) {}
+    Costumer(int id, int phone, bool member) : m_c_id(id), m_phone_num(phone), is_member(member), m_expenses(0) {}
     ~Costumer() = default;
     Costumer(const Costumer& ether) = default;
     Costumer& operator=(const Costumer& Costumer);

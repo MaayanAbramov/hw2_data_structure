@@ -1,10 +1,11 @@
-#include "recordsCompany.h"
+//#include "recordsCompany.h"
 #include "utilesWet2.h"
 #include <string>
 #include <iostream>
 #include <vector>
-#include "Group.h"
+
 #include "Costumer.h"
+#include "hash_table.h"
 
 using namespace std;
 
@@ -17,23 +18,35 @@ void print(string cmd, Output_t<T> res);
 
 vector<int> getRecordsStocks();
 
+
 int main()
 {
-    Group group(10);
-    Costumer costumer1(5, 526178916, true);
-    RecordsCompany company;
-    company.get_all_data().insert(company.get_all_data().ptr_main_root, costumer1);
 
-    auto ptr_to_costumer = company.get_all_data().find_pointer(company.get_all_data().ptr_main_root, costumer1);
-    //fix find_pointer to return T*
-
-
-    group.get_group_tree().ptr_main_root = group.get_group_tree().insert(group.get_group_tree().ptr_main_root, ptr_to_costumer);
-    auto UserToUpdate = group.get_group_tree().find_pointer(group.get_group_tree().ptr_main_root, ptr_to_costumer);
-    (*UserToUpdate)->set_is_member(false);
-    (*UserToUpdate)->set_id(2);
+    // Create an instance of Costumer
+    int id = 1; // Example ID
+    int phone = 1234567890; // Example phone number
+    bool isMember = true; // Example membership status
+    Costumer customer(id, phone, isMember);
 
 
+    // Create an instance of hash_table
+    hash_table<Costumer> myHashTable;
+
+    // Insert customer into the hash table
+    int key = customer.get_id(); // Example key
+    myHashTable.insert_to_array(customer, key);
+
+    // Find a customer in the hash table
+    Costumer* foundCustomer = myHashTable.find(key);
+    if (foundCustomer != nullptr) {
+        int foundID = foundCustomer->get_id();
+        int foundPhone = foundCustomer->get_phone();
+        bool foundIsMember = foundCustomer->get_is_member();
+        std::cout << "Found customer with ID: " << foundID << ", Phone: " << foundPhone << ", Membership: "
+                  << (foundIsMember ? "Yes" : "No") << std::endl;
+    } else {
+        std::cout << "Customer with key " << key << " not found." << std::endl;
+    }
     /*
     string op;
     RecordsCompany *test_obj = new RecordsCompany();
