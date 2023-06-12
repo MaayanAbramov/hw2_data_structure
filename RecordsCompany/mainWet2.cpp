@@ -36,7 +36,7 @@ int main()
 
     // Find a customer by ID
     int searchId = 2;
-    Costumer* foundCustomer = customerTable.find(searchId);
+    auto foundCustomer = customerTable.find(searchId);
     if (foundCustomer != nullptr) {
         std::cout << "Customer found: " << *foundCustomer << std::endl;
     } else {

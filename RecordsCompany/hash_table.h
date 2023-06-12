@@ -7,34 +7,40 @@
 using namespace std;
 #include <iostream>
 #include "AvlTree.h"
-
+/*template <class T>
+class Getter{
+public:
+    int operator()(const T&) = 0;
+};*/
 
 template <class T>
 class hash_table{
 public:
+
     class object {
 
         int m_key;
-        T *m_object;
-
+        const T *m_object;
 
         friend class hash_table<T>;
 
+
+
     public:
-        /*----------------the big three---------------*/
-        explicit object(T* object, int key);  //we don't want the constructor to do implicit conversion between
+        //----------------the big three---------------
+        explicit object(const T* object, int key);  //we don't want the constructor to do implicit conversion between
         // types
         ~object() = default;
 
         object(const object &other) = default;
 
-        /*----------------the big three---------------*/
+        //----------------the big three---------------
 
 
         T *get_object() const;
 
-        void  set_object(T *object);
-        
+        //void  set_object(const T *object);
+
         //there is no reason to create a setter function for this boolean field
         //the reason is that the function that responible for the size multipication will indicate this for us.
 
@@ -42,7 +48,7 @@ public:
         //no reason to create a setter function for this field
 
 
-        /*--------------------------operators------------*/
+        //--------------------------operators------------
         object &operator=(const object &array_object2);
         bool operator==(const object& array_object2);
         bool operator<(const object& arr_obj2) const;
@@ -75,7 +81,7 @@ public:
     /*--------------- process functions--------------------*/
     int hash(int key);
 
-    T* find(int key);
+    const T* find(int key);
 
     void changeSizeIfNeeded();
 
@@ -86,7 +92,7 @@ public:
 
 
 
-    friend std::ostream& operator<<(std::ostream &os, const hash_table<T>& hash);
+    //friend std::ostream& operator<<(std::ostream &os, const hash_table<T>& hash);
 
 
 
@@ -97,18 +103,18 @@ public:
 
 
 template <class T>
-hash_table<T>::object::object(T* object, int key) : m_key(key), m_object(object){}
+hash_table<T>::object::object(const T* object, int key) : m_key(key), m_object(object){}
 
 
 template <class T>
 T* hash_table<T>::object::get_object() const{
     return m_object;
 }
-
+/*
 template <class T>
-void hash_table<T>::object::set_object(T *object) {
+void hash_table<T>::object::set_object(const T *object) {
     m_object = object;
-}
+}*/
 
 /*template <class T>
 bool hash_table<T>::object::get_is_insertion_available() const {
@@ -125,7 +131,7 @@ typename hash_table<T>::object& hash_table<T>::object::operator=(const hash_tabl
     if (this == &array_object2) {
         return *this;
     }
-    m_object = array_object2.get_object();
+    m_object = array_object2.m_object;
     m_key = array_object2.get_key();
     //m_is_insertion_available = array_object2.get_is_insertion_available();
 
@@ -151,9 +157,7 @@ bool hash_table<T>::object::operator>(const object& arr_obj2) const {
 
 /*-------------------------- hash table ---------------*/
 template <class T>
-hash_table<T>::hash_table()   {
-    m_size = default_Length;
-    m_count_elements = 0;
+hash_table<T>::hash_table(): m_size(default_Length), m_count_elements(0){
     this->m_array = new AvlTree<object>[m_size];
     for (int i = 0; i < m_size; i++) {
         m_array[i] = AvlTree<object>(); // Initialize each tree in the array
@@ -166,7 +170,6 @@ hash_table<T>::hash_table()   {
 template <class T>
 hash_table<T>::~hash_table() {
     delete[] m_array;
-
 }
 
 template <class T>
@@ -175,16 +178,18 @@ int hash_table<T>::hash(int key) {
 }
 
 template <class T>
-T* hash_table<T>::find(int key) {
+const T* hash_table<T>::find(int key) {
     int index_in_array = hash(key);
     object toFind(nullptr, key);
-    bool is_exist = m_array[index_in_array].is_key_exists(m_array[index_in_array].ptr_main_root, toFind);
+    AvlTree<object>* current_tree = &m_array[index_in_array];
+    bool is_exist = current_tree->is_key_exists(m_array[index_in_array].ptr_main_root, toFind);
     if (!is_exist) {
         return nullptr;
     }
     else {
-        auto toReturn = m_array[index_in_array]->find_pointer(m_array[index_in_array].ptr_main_root, toFind);
-        return toReturn;
+        object* toReturn = current_tree->find_pointer(m_array[index_in_array].ptr_main_root, toFind);
+
+        return toReturn->m_object;
     }
 }
 
@@ -247,6 +252,7 @@ bool hash_table<T>::remove_from_array(const T& objectToAdd, int key) {
 
 }
 
+/*
 template <class T>
 std::ostream& operator<<(std::ostream &os, const hash_table<T>& hash)
 {
@@ -255,7 +261,7 @@ std::ostream& operator<<(std::ostream &os, const hash_table<T>& hash)
         os << "arr[" << i << "]: " << hash.m_array[i];
     os << std::endl;
     return os;
-}
+}*/
 
 
 
