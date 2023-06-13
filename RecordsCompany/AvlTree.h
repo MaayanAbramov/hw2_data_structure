@@ -16,6 +16,8 @@
 
 #include <iostream>
 using namespace std;
+//#include <string>
+//#include <iomanip>
 
 
 template <class T>
@@ -47,6 +49,7 @@ public:
         //recursive calls
         deleteNodesOfTree(curr_node->m_ptr_right);
         deleteNodesOfTree(curr_node->m_ptr_left);
+
         delete curr_node;
         //cout << "deleteNodesOfTree | got out" << endl;
     }
@@ -55,6 +58,7 @@ public:
     ~AvlTree() {
         //cout << " ~AvlTree | got in --------------------------------------------------------------------------"<<
         // endl;
+
         deleteNodesOfTree(ptr_main_root);
         //cout << " ~AvlTree | got out "<< endl;
     }
@@ -85,7 +89,7 @@ public:
     // returns a pointer to a node with a given value
     // the value is a node in a tree, and ptr_node is not a null
     // a function that gets the key and returns the pointer to it
-    T* find_pointer(Node* ptr_node, const T& key) {
+    T* find_pointer_t(Node* ptr_node, const T& key) {
         bool if_exists = is_key_exists(ptr_main_root, key);
         if (!if_exists) {
             return nullptr;
@@ -102,12 +106,37 @@ public:
         else if (ptr_node->m_data < key) {
             //cout << " curr val of a node is less than key | " << endl;
             //cout << " curr val of a node is: " << ptr_node->m_data << endl;
-            return find_pointer(ptr_node->m_ptr_right, key);
+            return find_pointer_t(ptr_node->m_ptr_right, key);
         }
         else {
             //cout << " curr val of a node is greater than key | " << endl;
             //cout << " curr val of a node is: " << ptr_node->m_data << endl;
-            return find_pointer(ptr_node->m_ptr_left, key);
+            return find_pointer_t(ptr_node->m_ptr_left, key);
+        }
+    }
+    Node* find_pointer_node(Node* ptr_node, const T& key) {
+        bool if_exists = is_key_exists(ptr_main_root, key);
+        if (!if_exists) {
+            return nullptr;
+        }
+        //AvlTree::Node* ptr_found;
+
+        if (ptr_node->m_data == key) {
+            //cout << "I found the pointer of "<< ptr_node->m_data << endl;
+            //cout << "and the pointer is " << ptr_node << endl;
+
+            //ptr_found = ptr_node;
+            return ptr_node;
+        }
+        else if (ptr_node->m_data < key) {
+            //cout << " curr val of a node is less than key | " << endl;
+            //cout << " curr val of a node is: " << ptr_node->m_data << endl;
+            return find_pointer_node(ptr_node->m_ptr_right, key);
+        }
+        else {
+            //cout << " curr val of a node is greater than key | " << endl;
+            //cout << " curr val of a node is: " << ptr_node->m_data << endl;
+            return find_pointer_node(ptr_node->m_ptr_left, key);
         }
     }
 
@@ -371,8 +400,8 @@ private:
         return ptr_node;
     }
 public:
-    /*
-    void printNode(typename AvlTree<T>::Node *node, int level) {
+
+    /*void printNode(typename AvlTree<T>::Node *node, int level) {
         if (node == nullptr) {
             return;
         }
@@ -456,7 +485,7 @@ public:
     // deletes a note of a tree while keeping it avl balanced
     void remove_node(Node* main_root, const T& key) {
 
-        Node* ptr_v = find_pointer(main_root, key);
+        Node* ptr_v = find_pointer_node(main_root, key);
         if (ptr_v == nullptr) {
             return;
         }
@@ -788,12 +817,13 @@ void printNode(typename AvlTree<T>::Node *node, int level, std::string connectio
 
     printNode(node->m_ptr_left, level + 1, " \\");
 }
+template <class T>
 
 void printAvlTree(const AvlTree &avl) {
     printNode(avl.ptr_main_root, 0);
-}*/
+}
 
-
+*/
 
 #endif //AVLTREE_H
 

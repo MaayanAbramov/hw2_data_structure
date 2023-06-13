@@ -21,27 +21,27 @@ vector<int> getRecordsStocks();
 
 int main()
 {
+    // Create a hash_table of integers
+    hash_table<int> table;
 
-    hash_table<Costumer> customerTable;
-
-    // Create some customers
-    Costumer customer1(1, 1234567, true);
-    Costumer customer2(2, 9876543, false);
-    Costumer customer3(3, 5555555, true);
-
-    // Insert customers into the hash table
-    customerTable.insert_to_array(customer1, customer1.get_id());
-    customerTable.insert_to_array(customer2, customer2.get_id());
-    customerTable.insert_to_array(customer3, customer3.get_id());
-
-    // Find a customer by ID
-    int searchId = 2;
-    auto foundCustomer = customerTable.find(searchId);
-    if (foundCustomer != nullptr) {
-        std::cout << "Customer found: " << *foundCustomer << std::endl;
-    } else {
-        std::cout << "Customer with ID " << searchId << " not found." << std::endl;
+    // Insert elements into the table
+    for (int i = 0; i < 30; i++) {
+        table.insert_to_array(i, i);
     }
+
+    // Check the initial size and count of elements
+    std::cout << "Initial size: " << table.m_size << std::endl;
+    std::cout << "Initial count of elements: " << table.m_count_elements << std::endl;
+
+    // Remove elements from the table
+    for (int i = 0; i < 16; i++) {
+        table.remove_from_array(i, i);
+    }
+
+    // Check the size and count of elements after removal
+    std::cout << "Size after removal: " << table.m_size << std::endl;
+    std::cout << "Count of elements after removal: " << table.m_count_elements << std::endl;
+
 
     /*
     string op;

@@ -29,6 +29,7 @@ public:
     public:
         //----------------the big three---------------
         explicit object(const T* object, int key);  //we don't want the constructor to do implicit conversion between
+        object() : m_key(-1), m_object(nullptr){}
         // types
         ~object() = default;
 
@@ -67,22 +68,27 @@ public:
 
 private:
     static const int default_Length = 16;
-    int m_size; // this is the size of the array
-    int m_count_elements;
+     // this is the size of the array
+
     //AvlTree<object> m_array[default_Length]; //every field in the array will be tree
-    AvlTree<object>* m_array;
+
 
 public:
+    AvlTree<object>* m_array;
     /*-------------------- the big three ----------------*/
     explicit hash_table();
     ~hash_table();
     hash_table(const hash_table<T>& other) = delete;
+    int m_size;
+    int m_count_elements;
+
 
     /*--------------- process functions--------------------*/
     int hash(int key);
 
     const T* find(int key);
 
+    void assignObjectsToArray(typename AvlTree<object>::Node* node, object* arr);
     void changeSizeIfNeeded();
 
 
@@ -142,7 +148,9 @@ typename hash_table<T>::object& hash_table<T>::object::operator=(const hash_tabl
 template<class T>
 bool hash_table<T>::object::operator==(const hash_table::object
                                              &array_object2) {
-    return array_object2.m_key == this->m_key;
+    bool OK1 = array_object2.m_key == this->m_key;
+    //bool OK2 = array_object2.m_object == this->m_object;
+    return OK1;
 }
 
 template <class T>
@@ -159,9 +167,9 @@ bool hash_table<T>::object::operator>(const object& arr_obj2) const {
 template <class T>
 hash_table<T>::hash_table(): m_size(default_Length), m_count_elements(0){
     this->m_array = new AvlTree<object>[m_size];
-    for (int i = 0; i < m_size; i++) {
+    /*for (int i = 0; i < m_size; i++) {
         m_array[i] = AvlTree<object>(); // Initialize each tree in the array
-    }
+    }*/
 
 }
 
@@ -179,18 +187,30 @@ int hash_table<T>::hash(int key) {
 
 template <class T>
 const T* hash_table<T>::find(int key) {
-    int index_in_array = hash(key);
+
     object toFind(nullptr, key);
+    int index_in_array = hash(key);
     AvlTree<object>* current_tree = &m_array[index_in_array];
-    bool is_exist = current_tree->is_key_exists(m_array[index_in_array].ptr_main_root, toFind);
+
+    bool is_exist = current_tree->is_key_exists(current_tree->ptr_main_root, toFind);
     if (!is_exist) {
         return nullptr;
     }
     else {
-        object* toReturn = current_tree->find_pointer(m_array[index_in_array].ptr_main_root, toFind);
+        object* toReturn = current_tree->find_pointer_t(current_tree->ptr_main_root, toFind);
 
         return toReturn->m_object;
     }
+}
+
+template <class T>
+void hash_table<T>::assignObjectsToArray(typename AvlTree<object>::Node* node, object* arr) {
+    if (node == nullptr) {
+        return;
+    }
+    assignObjectsToArray(node->m_ptr_left, arr);
+    *arr++ = node->m_data;
+    assignObjectsToArray(node->m_ptr_right, arr);
 }
 
 template <class T>
@@ -201,21 +221,45 @@ void hash_table<T>::changeSizeIfNeeded() {
     if (m_count_elements >= m_size) {
         int backupToSize = m_size;
         m_size = m_size*2;
-        AvlTree<object> updatedArray[m_size];
+        auto updatedArray = new AvlTree<object>[m_size];
         for (int i = 0 ; i < backupToSize ; i++) {
-            auto ptr_to_tree = &m_array[i];
-            updatedArray[i] = *ptr_to_tree;
+            auto tree_ob = &m_array[i];
+            auto arr = new object[backupToSize];
+            assignObjectsToArray(tree_ob->ptr_main_root, arr);
+            for (int j = 0 ; j < sizeof(arr)/sizeof(object) ; j++) {
+                object* current_obj = &arr[j];
+                int current_key = (current_obj->get_key());
+                AvlTree<object>* current_tree = &updatedArray[hash(current_key)];
+                current_tree->ptr_main_root = current_tree->insert(current_tree->ptr_main_root, *current_obj);
+
+            }
+            delete[] arr;
+
         }
+
+
         delete[] m_array;
         m_array = updatedArray;
     }
+
+
+
     else if(m_count_elements <= 0.25*m_size) {
         int backUpToSize = m_size;
         m_size = m_size/2;
-        AvlTree<object> updatedArray[m_size];
+        auto updatedArray = new AvlTree<object>[m_size];
         for (int i = 0 ; i < backUpToSize ; i++) {
-            auto ptr_to_tree = &m_array[i];
-            updatedArray[hash(i)] = *ptr_to_tree;
+            auto tree_ob = &m_array[i];
+            auto arr = new object[backUpToSize];
+            assignObjectsToArray(tree_ob->ptr_main_root, arr);
+            for (int j = 0; j < sizeof(arr) / sizeof(object); j++) {
+                object *current_obj = &arr[j];
+                int current_key = (current_obj->get_key());
+                AvlTree<object> *current_tree = &updatedArray[hash(current_key)];
+                current_tree->ptr_main_root = current_tree->insert(current_tree->ptr_main_root, *current_obj);
+
+            }
+            delete[] arr;
         }
         delete[] m_array;
         m_array = updatedArray;
@@ -224,15 +268,24 @@ void hash_table<T>::changeSizeIfNeeded() {
 }
 
 
+
+
+
 template <class T>
 bool hash_table<T>::insert_to_array(const T& objectToAdd, int key) {
+    object toAdd(&objectToAdd, key);
+    int hash_key = hash(key);
+    AvlTree<object>* current_tree = &m_array[hash_key];
     if (find(key)) {
         return false;
     }
-    object toAdd(&objectToAdd, key);
-    int hash_key = hash(key);
-    m_array[hash_key].ptr_main_root = m_array[hash_key].insert(m_array[hash_key].ptr_main_root, toAdd);
-    m_count_elements++;
+    if (current_tree->insert(current_tree->ptr_main_root, toAdd) != nullptr) {
+        current_tree->ptr_main_root = current_tree->insert(current_tree->ptr_main_root, toAdd);
+        m_count_elements++;
+    }
+    else {
+        return false;
+    }
     changeSizeIfNeeded();
     return true;
 
@@ -245,12 +298,17 @@ bool hash_table<T>::remove_from_array(const T& objectToAdd, int key) {
     }
     object toRemove(&objectToAdd, key);
     int hash_key = hash(key);
-    m_array[hash_key].remove_node(m_array[hash_key].ptr_main_root, toRemove);
+    AvlTree<object>* current_tree = &m_array[hash_key];
+    current_tree->remove_node(current_tree->ptr_main_root, toRemove);
     m_count_elements--;
     changeSizeIfNeeded();
     return true;
 
 }
+
+
+
+
 
 /*
 template <class T>
