@@ -21,27 +21,60 @@ vector<int> getRecordsStocks();
 
 int main()
 {
-    // Create a hash_table of integers
-    hash_table<int> table;
+    // Create a hash_table of Costumer objects
+    hash_table<Costumer> table;
 
-    // Insert elements into the table
-    for (int i = 0; i < 30; i++) {
-        table.insert_to_array(i, i);
+    // Create 15 customers
+    std::vector<Costumer> customers;
+    for (int i = 0; i < 33; i++) {
+        Costumer c(i, i + 100, i % 2 == 0);
+        table.insert_to_array(c, i);
     }
 
-    // Check the initial size and count of elements
-    std::cout << "Initial size: " << table.m_size << std::endl;
-    std::cout << "Initial count of elements: " << table.m_count_elements << std::endl;
+    // Insert all customers to the hash_table
 
-    // Remove elements from the table
-    for (int i = 0; i < 16; i++) {
-        table.remove_from_array(i, i);
+
+    for (int i = 0; i < 33; i++) {
+        Costumer c(i, i + 100, i % 2 == 0);
+        if (table.find(i) == nullptr) {
+            cout << "Customer with id " << c.get_id() << " not found." << std::endl;
+        }
     }
 
-    // Check the size and count of elements after removal
-    std::cout << "Size after removal: " << table.m_size << std::endl;
-    std::cout << "Count of elements after removal: " << table.m_count_elements << std::endl;
+    // Create two more customers with different ids
+    /*Costumer extraCustomer1(15, 115, true);
+    Costumer extraCustomer2(16, 116, false);
+    Costumer extraCustomer3(17, 117, false);
 
+    // Insert the extra customers to the hash_table
+    table.insert_to_array(extraCustomer1, extraCustomer1.get_id());
+    table.insert_to_array(extraCustomer2, extraCustomer2.get_id());
+    table.insert_to_array(extraCustomer3, extraCustomer3.get_id());
+*/
+    // Print the values of m_size and m_count_elements
+    std::cout << "Size of the hash_table: (expected 64)" << table.m_size << std::endl;
+    std::cout << "Number of elements in the hash_table (expected 33): " << table.m_count_elements << std::endl;
+
+    // Check if a random customer from before can still be found
+    Costumer randomCustomer1(0, 100, true);
+    if (table.find(randomCustomer1.get_id())) {
+        std::cout << "Customer with id " << randomCustomer1.get_id() << " found." << std::endl;
+    } else {
+        std::cout << "Customer with id " << randomCustomer1.get_id() << " not found." << std::endl;
+    }
+
+    Costumer randomCustomer2(7, 107, false);
+    if (table.find(randomCustomer2.get_id())) {
+        std::cout << "Customer with id " << randomCustomer2.get_id() << " found." << std::endl;
+    } else {
+        std::cout << "Customer with id " << randomCustomer2.get_id() << " not found." << std::endl;
+    }
+    for (int i = 0; i < 33; i++) {
+        Costumer c(i, i + 100, i % 2 == 0);
+        if (table.find(i) == nullptr) {
+            cout << "Customer with id " << c.get_id() << " not found." << std::endl;
+        }
+    }
 
     /*
     string op;

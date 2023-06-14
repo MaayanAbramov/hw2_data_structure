@@ -38,6 +38,7 @@ public:
     };
 public:
     Node* ptr_main_root;
+    int m_num_elements;
     AvlTree() : ptr_main_root(nullptr) {}
 
     void deleteNodesOfTree(Node* curr_node) { // the argument is only for the recursive call15
@@ -49,7 +50,7 @@ public:
         //recursive calls
         deleteNodesOfTree(curr_node->m_ptr_right);
         deleteNodesOfTree(curr_node->m_ptr_left);
-
+        m_num_elements--;
         delete curr_node;
         //cout << "deleteNodesOfTree | got out" << endl;
     }
@@ -434,6 +435,7 @@ public:
             //printAvlTree();
             //cout << "insert | ptr_main_root == nullptr" << endl;
             //printAvlTree(*this);
+            m_num_elements++;
             return source;
         }
 
@@ -489,6 +491,7 @@ public:
         if (ptr_v == nullptr) {
             return;
         }
+        m_num_elements--;
         Node* temp = ptr_v->m_ptr_father;
 
         // if ptr_v is a leaf - delete it

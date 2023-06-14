@@ -7,6 +7,7 @@
 using namespace std;
 #include <iostream>
 #include "AvlTree.h"
+#include <cassert>
 /*template <class T>
 class Getter{
 public:
@@ -29,7 +30,7 @@ public:
     public:
         //----------------the big three---------------
         explicit object(const T* object, int key);  //we don't want the constructor to do implicit conversion between
-        object() : m_key(-1), m_object(nullptr){}
+        object() : m_key(-1), m_object(nullptr) {}
         // types
         ~object() = default;
 
@@ -218,19 +219,31 @@ void hash_table<T>::changeSizeIfNeeded() {
     if (m_count_elements <= default_Length/2) {
         return;
     }
-    if (m_count_elements >= m_size) {
+    if (m_count_elements >= m_size) { //not copied correct
         int backupToSize = m_size;
         m_size = m_size*2;
         auto updatedArray = new AvlTree<object>[m_size];
         for (int i = 0 ; i < backupToSize ; i++) {
-            auto tree_ob = &m_array[i];
-            auto arr = new object[backupToSize];
+            AvlTree<object>* tree_ob = &m_array[i];
+
+            int elems_in_tree_ob = tree_ob->m_num_elements;
+            auto arr = new object[elems_in_tree_ob];
             assignObjectsToArray(tree_ob->ptr_main_root, arr);
-            for (int j = 0 ; j < sizeof(arr)/sizeof(object) ; j++) {
+
+            //test
+            for (int k = 0 ; k < elems_in_tree_ob ; k++) {
+                object* current_obj = &arr[k];
+                assert(current_obj->m_key != -1); //checks if the array didnt anitialized well
+
+            }
+            for (int j = 0 ; j < elems_in_tree_ob ; j++) {
+
                 object* current_obj = &arr[j];
                 int current_key = (current_obj->get_key());
                 AvlTree<object>* current_tree = &updatedArray[hash(current_key)];
                 current_tree->ptr_main_root = current_tree->insert(current_tree->ptr_main_root, *current_obj);
+
+
 
             }
             delete[] arr;
@@ -242,8 +255,8 @@ void hash_table<T>::changeSizeIfNeeded() {
         m_array = updatedArray;
     }
 
-
-
+/*---------------------no need for resize to half------------------------*/
+/*
     else if(m_count_elements <= 0.25*m_size) {
         int backUpToSize = m_size;
         m_size = m_size/2;
@@ -264,6 +277,7 @@ void hash_table<T>::changeSizeIfNeeded() {
         delete[] m_array;
         m_array = updatedArray;
     }
+    */
     return;
 }
 
@@ -276,16 +290,11 @@ bool hash_table<T>::insert_to_array(const T& objectToAdd, int key) {
     object toAdd(&objectToAdd, key);
     int hash_key = hash(key);
     AvlTree<object>* current_tree = &m_array[hash_key];
-    if (find(key)) {
+    if (find(key) != nullptr) { // means the key is already in the tree
         return false;
     }
-    if (current_tree->insert(current_tree->ptr_main_root, toAdd) != nullptr) {
-        current_tree->ptr_main_root = current_tree->insert(current_tree->ptr_main_root, toAdd);
-        m_count_elements++;
-    }
-    else {
-        return false;
-    }
+    current_tree->ptr_main_root = current_tree->insert(current_tree->ptr_main_root, toAdd);
+    m_count_elements++;
     changeSizeIfNeeded();
     return true;
 
@@ -293,7 +302,7 @@ bool hash_table<T>::insert_to_array(const T& objectToAdd, int key) {
 
 template <class T>
 bool hash_table<T>::remove_from_array(const T& objectToAdd, int key) {
-    if (!find(key)) {
+    if (find(key) == nullptr) { //means the key already does not exists in the tree
         return false;
     }
     object toRemove(&objectToAdd, key);
