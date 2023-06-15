@@ -19,7 +19,7 @@ struct record_with_id {
 
 class RecordsCompany {
 private:
-    // todo
+
     //AvlTree<Costumer> m_all_data; //tests only
 
     AvlTree<Costumer> m_vip_costumers;
