@@ -4,13 +4,6 @@
 
 #include "recordsCompany.h"
 
-/*
-RecordsCompany::RecordsCompany() {
-    //m_vip_costumers = RankTree<Customer*>();
-    //m_all_costumers = hash_table<Customer>();
-    //m_records_stock = Union_Find();
-}*/
-
 
 StatusType RecordsCompany::newMonth(int *records_stocks, int number_of_records) {
     try {
@@ -196,7 +189,7 @@ StatusType RecordsCompany::putOnTop(int r_id1, int r_id2) {
         return StatusType::DOESNT_EXISTS;
     }
 
-    // check if one of them is already on top of the other
+    // TODO: check if one of them is already on top of the other
 
     // TODO: add implementation here
 
@@ -217,6 +210,7 @@ StatusType RecordsCompany::getPlace(int r_id, int *column, int *hight) {
 
     return StatusType::SUCCESS;
 }
+
 
 int customer_getter::operator()(Customer *t) {
     if (t == nullptr) {
