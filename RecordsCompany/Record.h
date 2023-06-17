@@ -9,11 +9,24 @@
 class Record {
     int m_r_id;
     int m_num_of_copies;
-    int m_num_of_sells;
+    int m_num_of_sales;
+
 public:
-    Record(int r_id, int copies, int num_sells) : m_r_id(r_id), m_num_of_copies(copies), m_num_of_sells(num_sells){}
+    Record(int r_id, int copies, int num_sales) : m_r_id(r_id), m_num_of_copies(copies), m_num_of_sales(num_sales){}
     ~Record() = default;
     Record(const Record& other) = default;
+
+    // getters and setters
+    int get_r_id() const;
+    int get_num_of_copies() const;
+    int get_num_of_sales() const;
+
+    void set_num_of_copies(int num_copies);
+    void set_num_of_sales(int num_sales);
+
+    // aux func
+
+    void inc_num_of_sales();
 };
 
 
