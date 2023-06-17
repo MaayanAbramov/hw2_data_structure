@@ -219,5 +219,8 @@ StatusType RecordsCompany::getPlace(int r_id, int *column, int *hight) {
 }
 
 int customer_getter::operator()(Customer *t) {
+    if (t == nullptr) {
+        return -1;
+    }
     return t->get_id();
 }
