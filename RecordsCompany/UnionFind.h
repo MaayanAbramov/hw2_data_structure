@@ -33,6 +33,7 @@ public:
     int recursive_height_sum(Node* ) const;
     int get_height(int r_id) const;
     /*----------------process functions------*/
+    void newMonth(int* records_stock, int num_of_records);
     Record* find_root_of_heap(int item);
     //this function also shrunken
     GroupOfNodes* find_group(int r_id) const;
@@ -109,6 +110,7 @@ public:
 
 
     };
+
 
 };
 

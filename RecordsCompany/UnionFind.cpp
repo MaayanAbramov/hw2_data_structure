@@ -11,6 +11,8 @@ Union_Find::~Union_Find() {
         delete[] m_elements;
     if(m_groups)
         delete[] m_groups;
+    m_elements = nullptr;
+    m_groups = nullptr;
 
 }
 
@@ -72,6 +74,7 @@ Union_Find::GroupOfNodes* Union_Find::Union(GroupOfNodes* group_1_up, GroupOfNod
         //because the group is not counted anymore
         group_1_up->m_root = nullptr;
         group_1_up->m_root->m_father = group_2_down->m_root;
+        return group_2_down;
 
     }
     else{
@@ -95,6 +98,68 @@ Union_Find::GroupOfNodes* Union_Find::Union(GroupOfNodes* group_1_up, GroupOfNod
     }
 
 }
+
+void Union_Find::newMonth(int* records_stock, int num_of_records)  {
+    if (num_of_records == 0) {
+        Union_Find::~Union_Find();
+        return;
+    }
+    Node* updated_node_array = nullptr;
+    try {
+        updated_node_array = new Node[num_of_records];
+    } catch(std::bad_alloc& e) {
+        delete[] updated_node_array;
+        throw;
+    }
+    GroupOfNodes* updated_group_array = nullptr;
+    try {
+        updated_group_array = new GroupOfNodes[num_of_records];
+    } catch (std::bad_alloc& e) {
+        delete[] updated_group_array;
+        throw;
+    }
+
+    //deleted all the old data
+    Union_Find::~Union_Find();
+
+    //now updating the data
+    int actual_size=0;
+    try {
+
+        for (int i = 0; i < num_of_records ; i++) {
+            updated_node_array[i].m_record = new Record(i, records_stock[i], 0);
+            actual_size++;
+        }
+    } catch (std::bad_alloc& e) {
+        for (int i = 0 ; i < actual_size ; i++) {
+            delete updated_node_array[i].m_record;
+        }
+        delete[] updated_node_array;
+        delete[] updated_group_array;
+    }
+
+    for (int i = 0 ; i < num_of_records ; i++) {
+        updated_group_array[i].m_num_of_members = 0;
+        //the height will be the amount of copies
+        //check if it should be zero instead
+        updated_group_array[i].m_height = updated_node_array[i].m_record->get_num_of_copies();
+        //the bottom is the record hiself
+        updated_group_array[i].m_column = updated_node_array[i].m_record->get_r_id();
+        updated_group_array[i].m_root = &updated_node_array[i];
+        updated_node_array[i].m_group = &updated_group_array[i];
+
+    }
+    m_elements = updated_node_array;
+    m_groups = updated_group_array;
+    m_size = num_of_records;
+
+
+
+
+
+
+}
+
 
 
 
