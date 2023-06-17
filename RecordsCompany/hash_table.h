@@ -4,10 +4,12 @@
 
 #ifndef RECORDSCOMPANY_HASH_TABLE_H
 #define RECORDSCOMPANY_HASH_TABLE_H
+
 using namespace std;
 #include <iostream>
 #include "AvlTree.h"
 #include <cassert>
+
 /*template <class T>
 class Getter{
 public:
@@ -17,19 +19,17 @@ public:
 template <class T>
 class hash_table{
 public:
-
     class object {
 
         int m_key;
-        const T *m_object;
+        T *m_object;
 
         friend class hash_table<T>;
 
 
-
     public:
         //----------------the big three---------------
-        explicit object(const T* object, int key);  //we don't want the constructor to do implicit conversion between
+        object(T* object, int key);  //we don't want the constructor to do implicit conversion between
         object() : m_key(-1), m_object(nullptr) {}
         // types
         ~object() = default;
@@ -44,7 +44,7 @@ public:
         //void  set_object(const T *object);
 
         //there is no reason to create a setter function for this boolean field
-        //the reason is that the function that responible for the size multipication will indicate this for us.
+        //the reason is that the function that responsible for the size multiplication will indicate this for us.
 
         int get_key() const;
         //no reason to create a setter function for this field
@@ -55,14 +55,6 @@ public:
         bool operator==(const object& array_object2);
         bool operator<(const object& arr_obj2) const;
         bool operator>(const object& arr_obj2) const;
-
-
-
-
-
-
-
-
 
     };
     //remember this is the hash class
@@ -87,34 +79,26 @@ public:
     /*--------------- process functions--------------------*/
     int hash(int key);
 
-    const T* find(int key);
+    T * find(int key);
 
     void assignObjectsToArray(typename AvlTree<object>::Node* node, object* arr);
     void changeSizeIfNeeded();
 
 
-    bool insert_to_array(const T& toAdd, int key);
-
-    bool remove_from_array(const T& toRemove, int key);
-
-
+    bool insert_to_array(T* toAdd, int key);
+    bool remove_from_array(const T& objectToRemove, int key);
 
     //friend std::ostream& operator<<(std::ostream &os, const hash_table<T>& hash);
-
-
-
-
-
 };
 
 
 
 template <class T>
-hash_table<T>::object::object(const T* object, int key) : m_key(key), m_object(object){}
+hash_table<T>::object::object(T* object, int key) : m_key(key), m_object(object){}
 
 
 template <class T>
-T* hash_table<T>::object::get_object() const{
+T * hash_table<T>::object::get_object() const{
     return m_object;
 }
 /*
@@ -164,6 +148,7 @@ bool hash_table<T>::object::operator>(const object& arr_obj2) const {
     return this->m_key < arr_obj2.get_key();
 }
 
+
 /*-------------------------- hash table ---------------*/
 template <class T>
 hash_table<T>::hash_table(): m_size(default_Length), m_count_elements(0){
@@ -173,7 +158,6 @@ hash_table<T>::hash_table(): m_size(default_Length), m_count_elements(0){
     }*/
 
 }
-
 
 
 template <class T>
@@ -187,7 +171,7 @@ int hash_table<T>::hash(int key) {
 }
 
 template <class T>
-const T* hash_table<T>::find(int key) {
+T * hash_table<T>::find(int key)  {
 
     object toFind(nullptr, key);
     int index_in_array = hash(key);
@@ -200,7 +184,7 @@ const T* hash_table<T>::find(int key) {
     else {
         object* toReturn = current_tree->find_pointer_t(current_tree->ptr_main_root, toFind);
 
-        return toReturn->m_object;
+        return toReturn->get_object();
     }
 }
 
@@ -233,7 +217,7 @@ void hash_table<T>::changeSizeIfNeeded() {
             //test
             for (int k = 0 ; k < elems_in_tree_ob ; k++) {
                 object* current_obj = &arr[k];
-                assert(current_obj->m_key != -1); //checks if the array didnt anitialized well
+                assert(current_obj->m_key != -1); //checks if the array didn't initialize well
 
             }
             for (int j = 0 ; j < elems_in_tree_ob ; j++) {
@@ -277,8 +261,8 @@ void hash_table<T>::changeSizeIfNeeded() {
         delete[] m_array;
         m_array = updatedArray;
     }
-    */
     return;
+    */
 }
 
 
@@ -286,8 +270,8 @@ void hash_table<T>::changeSizeIfNeeded() {
 
 
 template <class T>
-bool hash_table<T>::insert_to_array(const T& objectToAdd, int key) {
-    object toAdd(&objectToAdd, key);
+bool hash_table<T>::insert_to_array(T* objectToAdd, int key) {
+    object toAdd(objectToAdd, key);
     int hash_key = hash(key);
     AvlTree<object>* current_tree = &m_array[hash_key];
     if (find(key) != nullptr) { // means the key is already in the tree
@@ -301,11 +285,11 @@ bool hash_table<T>::insert_to_array(const T& objectToAdd, int key) {
 }
 
 template <class T>
-bool hash_table<T>::remove_from_array(const T& objectToAdd, int key) {
+bool hash_table<T>::remove_from_array(const T& objectToRemove, int key) {
     if (find(key) == nullptr) { //means the key already does not exists in the tree
         return false;
     }
-    object toRemove(&objectToAdd, key);
+    object toRemove(&objectToRemove, key);
     int hash_key = hash(key);
     AvlTree<object>* current_tree = &m_array[hash_key];
     current_tree->remove_node(current_tree->ptr_main_root, toRemove);
@@ -314,9 +298,6 @@ bool hash_table<T>::remove_from_array(const T& objectToAdd, int key) {
     return true;
 
 }
-
-
-
 
 
 /*
@@ -329,12 +310,5 @@ std::ostream& operator<<(std::ostream &os, const hash_table<T>& hash)
     os << std::endl;
     return os;
 }*/
-
-
-
-
-
-
-
 
 #endif //RECORDSCOMPANY_HASH_TABLE_H

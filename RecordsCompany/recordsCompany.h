@@ -11,6 +11,13 @@
 
 #include <iostream>
 class Customer;
+class customer_getter : public Getter<Customer *>{
+public:
+    int operator()(Customer *t) override;
+
+
+};
+
 
 class RecordsCompany {
 private:
@@ -19,7 +26,7 @@ private:
     Union_Find m_records_stock;
 
 public:
-    RecordsCompany();
+    RecordsCompany() : m_vip_costumers(new customer_getter()), m_all_costumers(), m_records_stock() {}
 
     ~RecordsCompany() = default;
 

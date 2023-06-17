@@ -4,11 +4,12 @@
 
 #include "recordsCompany.h"
 
+/*
 RecordsCompany::RecordsCompany() {
     //m_vip_costumers = RankTree<Customer*>();
     //m_all_costumers = hash_table<Customer>();
     //m_records_stock = Union_Find();
-}
+}*/
 
 
 StatusType RecordsCompany::newMonth(int *records_stocks, int number_of_records) {
@@ -52,7 +53,7 @@ StatusType RecordsCompany::addCustomer(int c_id, int phone) {
         }
 
         // adds a new customer to a hash_table of all customers
-        auto customerToAdd = Customer(c_id, phone, false);
+        auto customerToAdd = new Customer(c_id, phone, false);
         m_all_costumers.insert_to_array(customerToAdd, c_id);
     }
     catch (std::bad_alloc& ba) {
@@ -161,7 +162,10 @@ StatusType RecordsCompany::addPrize(int c_id1, int c_id2, double  amount) {
         return StatusType::INVALID_INPUT;
     }
 
-    // TODO: add implementation here
+    auto upper_bound = m_vip_costumers.find_closest_max(m_vip_costumers.ptr_main_root, c_id2, -1);
+    auto lower_bound = m_vip_costumers.find_closest_min(m_vip_costumers.ptr_main_root, c_id1-1, c_id1);
+    m_vip_costumers.add_amount(m_vip_costumers.ptr_main_root, false, upper_bound->m_data->get_id(), amount);
+    m_vip_costumers.add_amount(m_vip_costumers.ptr_main_root, false, lower_bound->m_data->get_id(), -amount);
 
     return StatusType::SUCCESS;
 }
@@ -212,4 +216,8 @@ StatusType RecordsCompany::getPlace(int r_id, int *column, int *hight) {
     // TODO: add implementation here
 
     return StatusType::SUCCESS;
+}
+
+int customer_getter::operator()(Customer *t) {
+    return t->get_id();
 }

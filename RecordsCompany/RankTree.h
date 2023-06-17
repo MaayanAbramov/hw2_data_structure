@@ -13,6 +13,12 @@ using namespace std;
 //#include <string>
 //#include <iomanip>
 
+template <class T>
+class Getter{
+public:
+    virtual ~Getter() = default;
+    virtual int operator()(T) = 0;
+};
 
 template <class T>
 class RankTree{
@@ -33,10 +39,12 @@ public:
         T getData(){return this->m_data;}
         int getPrize() {return this->m_prize;}
     };
+
 public:
     Node* ptr_main_root;
     int m_num_elements;
-    RankTree() : ptr_main_root(nullptr) {}
+    Getter<T> *m_getter;
+    explicit RankTree(Getter<T> *getter) : ptr_main_root(nullptr), m_num_elements(0), m_getter(getter) {}
 
     void deleteNodesOfTree(Node* curr_node) { // the argument is only for the recursive call15
         //cout << "deleteNodesOfTree | got in" << endl;
@@ -58,6 +66,7 @@ public:
         // endl;
 
         deleteNodesOfTree(ptr_main_root);
+        delete m_getter;
         //cout << " ~RankTree | got out "<< endl;
     }
 
@@ -956,6 +965,80 @@ public:
             if (node->m_ptr_left != nullptr) {
                 printNode(node->m_ptr_left, indent + "     ", "  /");
             }
+        }
+    }
+
+
+// ranked tree functions
+
+// finds the closest value to min bound (returns val that is >= min)
+    Node* find_closest_min(Node* curr_node, int val_to_find, int curr_min) {
+        if (curr_node == nullptr) {
+            return nullptr;
+        }
+
+        if ((*m_getter)(curr_node->m_data) == val_to_find) {
+            return curr_node;
+        }
+
+        else if ((*m_getter)(curr_node->m_data) < val_to_find) {
+            return find_closest_min(curr_node->m_ptr_right, val_to_find, curr_min);
+        }
+
+        else {
+            return find_closest_min(curr_node->m_ptr_left, val_to_find, (*m_getter)(curr_node->m_data));
+        }
+
+        return nullptr;
+    }
+
+// finds the closest value to max bound (returns val that is <= max)
+    Node* find_closest_max(Node* curr_node, int val_to_find, int curr_max) {
+        if (curr_node == nullptr) {
+            return nullptr;
+        }
+
+        if ((*m_getter)(curr_node->m_data) == val_to_find) {
+            return curr_node;
+        }
+
+        else if ((*m_getter)(curr_node->m_data) < val_to_find) {
+            return find_closest_max(curr_node->m_ptr_right, val_to_find, (*m_getter)(curr_node->m_data));
+        }
+
+        else {
+            return find_closest_max(curr_node->m_ptr_left, val_to_find, curr_max);
+        }
+
+        return nullptr;
+    }
+
+    void add_amount(Node* curr_node, bool is_last_turn_right, int upper_bound, double amount) {
+        if (curr_node == nullptr) {
+            return;
+        }
+
+        else if ((*m_getter)(curr_node->m_data) == upper_bound) {
+            if (is_last_turn_right) {
+                curr_node->m_prize += amount;
+            }
+            if (curr_node->m_ptr_right != nullptr) {
+                curr_node->m_ptr_right->m_prize -= amount;
+            }
+        }
+
+        else if ((*m_getter)(curr_node->m_data) > upper_bound) {
+            if (is_last_turn_right) {
+                curr_node->m_prize -= amount;
+            }
+            add_amount(curr_node->m_ptr_left, false, upper_bound, amount);
+        }
+
+        else {
+            if (!is_last_turn_right) {
+                curr_node->m_prize += amount;
+            }
+            add_amount(curr_node->m_ptr_right, true, upper_bound, amount);
         }
     }
 
