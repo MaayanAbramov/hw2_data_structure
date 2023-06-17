@@ -4,6 +4,13 @@
 
 #include "recordsCompany.h"
 
+/*
+RecordsCompany::RecordsCompany() {
+    //m_vip_costumers = RankTree<Customer*>();
+    //m_all_costumers = hash_table<Customer>();
+    //m_records_stock = Union_Find();
+}*/
+
 
 StatusType RecordsCompany::newMonth(int *records_stocks, int number_of_records) {
     try {
@@ -176,7 +183,18 @@ Output_t<double> RecordsCompany::getExpenses(int c_id) {
         return StatusType::DOESNT_EXISTS;
     }
 
-    // TODO: add implementation here
+    if (!curr_customer->get_is_member()) {
+        return 0;
+    }
+    else {
+        auto ptr_node_customer = m_vip_costumers.find_pointer_node(m_vip_costumers.ptr_main_root,curr_customer);
+        double prize = m_vip_costumers.acumulated_sum(ptr_node_customer);
+        double expenses = curr_customer->get_expenses();
+        return expenses-prize;
+    }
+
+
+
 }
 
 
@@ -189,11 +207,27 @@ StatusType RecordsCompany::putOnTop(int r_id1, int r_id2) {
         return StatusType::DOESNT_EXISTS;
     }
 
-    // TODO: check if one of them is already on top of the other
+    // check if one of them is already on top of the other
+    auto group1 = m_records_stock.find_group(r_id1);
+    auto group2 = m_records_stock.find_group(r_id2);
+    Union_Find::Node* root1 = group1->m_root;
+    Union_Find::Node* root2 = group2->m_root;
+    int group1_column = group1->m_column;
+    int group2_column = group2->m_column;
+    if (root1 == root2 && group1_column == group2_column) {
+        //if the records already one on the other
+        return StatusType::FAILURE;
+    }
+    else {
+        if (group1->m_num_of_members > group2->m_num_of_members) {
+            auto unioned_group = m_records_stock.Union(group1, group2);
+        }
+        else {
+            auto unioned_group = m_records_stock.Union(group2, group1);
+        }
+        return StatusType::SUCCESS;
+    }
 
-    // TODO: add implementation here
-
-    return StatusType::SUCCESS;
 }
 
 
@@ -206,11 +240,12 @@ StatusType RecordsCompany::getPlace(int r_id, int *column, int *hight) {
         return StatusType::DOESNT_EXISTS;
     }
 
-    // TODO: add implementation here
+    auto ptr_to_group = m_records_stock.find_group(r_id);
+    *column = ptr_to_group->m_column;
+    *hight = m_records_stock.get_height(r_id);
 
     return StatusType::SUCCESS;
 }
-
 
 int customer_getter::operator()(Customer *t) {
     if (t == nullptr) {

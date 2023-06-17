@@ -61,7 +61,7 @@ public:
 
 private:
     static const int default_Length = 16;
-     // this is the size of the array
+    // this is the size of the array
 
     //AvlTree<object> m_array[default_Length]; //every field in the array will be tree
 
@@ -132,7 +132,7 @@ typename hash_table<T>::object& hash_table<T>::object::operator=(const hash_tabl
 
 template<class T>
 bool hash_table<T>::object::operator==(const hash_table::object
-                                             &array_object2) {
+                                       &array_object2) {
     bool OK1 = array_object2.m_key == this->m_key;
     //bool OK2 = array_object2.m_object == this->m_object;
     return OK1;

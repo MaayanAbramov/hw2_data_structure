@@ -4,11 +4,12 @@
 #include <iostream>
 #include <vector>
 
-#include "Costumer.h"
+#include "Customer.h"
 #include "hash_table.h"
-#include "Union_Find_not_final.h"
+#include "UnionFind.h"
 #include "AvlTree.h"
 #include "RankTree.h"
+#include "Record.h"
 
 using namespace std;
 
@@ -24,7 +25,58 @@ vector<int> getRecordsStocks();
 
 int main()
 {
+    // Create records
+    Record* record1 = new Record(0, 100, 0);
+    Record* record2 = new Record(1, 200, 0);
+    Record* record3 = new Record(2, 300, 0);
+    Record* record4 = new Record(3, 400, 0);
+    Record* record5 = new Record(4, 500, 0);
+    Record* record6 = new Record(5, 600, 0);
+    Record* record7 = new Record(6, 700, 0);
 
+    Union_Find::Node* node1 = new Union_Find::Node();
+    node1->m_record = record1;
+    Union_Find::Node* node5 = new Union_Find::Node();
+    node1->m_record = record5;
+
+    // Create Union_Find object
+    Union_Find unionFind;
+
+    // Create and initialize the first group with 4 records
+    Union_Find::GroupOfNodes* group1 = new Union_Find::GroupOfNodes();
+    group1->set_num_of_members(4);
+    group1->set_height(1500);
+    group1->set_column(record3->get_r_id());
+    group1->set_root(node1);
+
+    // Create and initialize the second group with 3 records
+    Union_Find::GroupOfNodes* group2 = new Union_Find::GroupOfNodes();
+    group2->set_num_of_members(3);
+    group2->set_height(1800);
+    group2->set_column(record7->get_r_id());
+    group2->set_root(node5);
+
+    // Union the two groups
+    Union_Find::GroupOfNodes* mergedGroup = unionFind.Union(group1, group2);
+
+    // Print details of the merged group
+    std::cout << "Merged Group Details:" << std::endl;
+    std::cout << "Number of Members: " << mergedGroup->get_num_of_members() << std::endl;
+    std::cout << "Height: " << mergedGroup->get_height() << std::endl;
+    std::cout << "Column: " << mergedGroup->get_column() << std::endl;
+    std::cout << "Root Record ID: " << mergedGroup->get_root()->get_record()->get_r_id() << std::endl;
+
+    // Clean up memory
+    delete record1;
+    delete record2;
+    delete record3;
+    delete record4;
+    delete record5;
+    delete record6;
+    delete record7;
+
+    delete group1;
+    delete group2;
 
     /*
     string op;

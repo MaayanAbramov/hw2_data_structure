@@ -29,13 +29,13 @@ public:
         T m_data;
         int m_height;
         int m_balance_factor;
-        int m_prize;
-        int m_prize2;
+        double m_prize;
+        double m_prize2;
         Node* m_ptr_left;
         Node* m_ptr_right;
         Node* m_ptr_father;
         explicit Node(const T &data) : m_data(data), m_height(H_OF_LEAF), m_balance_factor(0), m_prize(0), m_prize2(0),
-        m_ptr_left(nullptr),m_ptr_right(nullptr), m_ptr_father(nullptr) {}
+                                       m_ptr_left(nullptr),m_ptr_right(nullptr), m_ptr_father(nullptr) {}
         T getData(){return this->m_data;}
         int getPrize() {return this->m_prize;}
     };
@@ -411,22 +411,22 @@ private:
             int not_updated_prize_for_Cr = acumulated_sum(parent->m_ptr_right);
             if (not_updated_prize_for_Cr != parent->m_ptr_right->m_prize2) {
                 parent->m_ptr_right->m_prize = parent->m_ptr_right->m_prize2 - (not_updated_prize_for_Cr -
-                        parent->m_ptr_right->m_prize);
+                                                                                parent->m_ptr_right->m_prize);
             }
             int not_updated_prize_for_Br = acumulated_sum(parent->m_ptr_left);
             if (not_updated_prize_for_Br != parent->m_ptr_left->m_prize2) {
                 parent->m_ptr_left->m_prize = parent->m_ptr_left->m_prize2 - (not_updated_prize_for_Br -
-                        parent->m_ptr_left->m_prize);
+                                                                              parent->m_ptr_left->m_prize);
             }
             int not_updated_prize_for_Bl = acumulated_sum(tempA->m_ptr_right);
             if (not_updated_prize_for_Bl != tempA->m_ptr_right->m_prize2) {
                 tempA->m_ptr_right->m_prize = tempA->m_ptr_right->m_prize2 - (not_updated_prize_for_Bl
-                        -tempA->m_ptr_right->m_prize);
+                                                                              -tempA->m_ptr_right->m_prize);
             }
             int not_updated_prize_for_Al = acumulated_sum(tempA->m_ptr_left);
             if (not_updated_prize_for_Al != tempA->m_ptr_left->m_prize2) {
                 tempA->m_ptr_left->m_prize = tempA->m_ptr_left->m_prize2 - (not_updated_prize_for_Al -
-                        tempA->m_ptr_left->m_prize);
+                                                                            tempA->m_ptr_left->m_prize);
             }
 
 
@@ -496,23 +496,23 @@ private:
             int not_updated_prize_for_Cl = acumulated_sum(parent->m_ptr_left);
             if (not_updated_prize_for_Cl != parent->m_ptr_left->m_prize2) {
                 parent->m_ptr_left->m_prize = parent->m_ptr_left->m_prize2 - (not_updated_prize_for_Cl -
-                                                                                parent->m_ptr_left->m_prize);
+                                                                              parent->m_ptr_left->m_prize);
             }
             int not_updated_prize_for_Bl = acumulated_sum(parent->m_ptr_right);
             if (not_updated_prize_for_Bl != parent->m_ptr_right->m_prize2) {
                 parent->m_ptr_right->m_prize = parent->m_ptr_right->m_prize2 - (not_updated_prize_for_Bl-
-                        parent->m_ptr_right->m_prize);
+                                                                                parent->m_ptr_right->m_prize);
             }
             int not_updated_prize_for_Br = acumulated_sum(tempA->m_ptr_left);
             if (not_updated_prize_for_Br != tempA->m_ptr_left->m_prize2) {
                 tempA->m_ptr_left->m_prize = tempA->m_ptr_left->m_prize2 - (not_updated_prize_for_Br -
-                        tempA->m_ptr_left->m_prize);
+                                                                            tempA->m_ptr_left->m_prize);
             }
 
             int not_updated_prize_for_Ar = acumulated_sum(tempA->m_ptr_right);
             if (not_updated_prize_for_Ar != tempA->m_ptr_right->m_prize2) {
                 tempA->m_ptr_right->m_prize = tempA->m_ptr_right->m_prize2 - (not_updated_prize_for_Ar -
-                                                                            tempA->m_ptr_right->m_prize);
+                                                                              tempA->m_ptr_right->m_prize);
             }
 
         }
