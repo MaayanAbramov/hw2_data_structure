@@ -6,11 +6,12 @@
 
 /*------------the implementation of union find class------------*/
 Union_Find::~Union_Find() {
-    m_size = 0;
+
     if (m_elements)
         delete[] m_elements;
     if(m_groups)
         delete[] m_groups;
+    m_size = 0;
     m_elements = nullptr;
     m_groups = nullptr;
 
@@ -72,8 +73,9 @@ Union_Find::GroupOfNodes* Union_Find::Union(GroupOfNodes* group_1_up, GroupOfNod
 
         group_1_up->m_root->m_group = nullptr;
         //because the group is not counted anymore
-        group_1_up->m_root = nullptr;
+
         group_1_up->m_root->m_father = group_2_down->m_root;
+        group_1_up->m_root = nullptr;
         return group_2_down;
 
     }
@@ -88,9 +90,10 @@ Union_Find::GroupOfNodes* Union_Find::Union(GroupOfNodes* group_1_up, GroupOfNod
 
 
         group_2_down->m_root->m_group = nullptr;//
-        group_2_down->set_root(nullptr);//
+
         //because the group is not counted anymore
         group_2_down->m_root->m_father = group_1_up->m_root; //
+        group_2_down->set_root(nullptr);//
 
         return group_1_up;
 
@@ -101,7 +104,7 @@ Union_Find::GroupOfNodes* Union_Find::Union(GroupOfNodes* group_1_up, GroupOfNod
 
 void Union_Find::newMonth(int* records_stock, int num_of_records)  {
     if (num_of_records == 0) {
-        Union_Find::~Union_Find();
+        this->~Union_Find();
         return;
     }
     Node* updated_node_array = nullptr;
@@ -120,7 +123,7 @@ void Union_Find::newMonth(int* records_stock, int num_of_records)  {
     }
 
     //deleted all the old data
-    Union_Find::~Union_Find();
+    this->~Union_Find();
 
     //now updating the data
     int actual_size=0;
@@ -139,7 +142,7 @@ void Union_Find::newMonth(int* records_stock, int num_of_records)  {
     }
 
     for (int i = 0 ; i < num_of_records ; i++) {
-        updated_group_array[i].m_num_of_members = 0;
+        updated_group_array[i].m_num_of_members = 1;
         //the height will be the amount of copies
         //check if it should be zero instead
         updated_group_array[i].m_height = updated_node_array[i].m_record->get_num_of_copies();
@@ -237,7 +240,7 @@ void Union_Find::Node::set_global_height(int num) {
 
 
 /*------------------the implementation of the groups of nodes class--------*/
-Union_Find::GroupOfNodes::GroupOfNodes() : m_num_of_members(0), m_height(0), m_column(-1), m_root(nullptr){}
+Union_Find::GroupOfNodes::GroupOfNodes() : m_num_of_members(1), m_height(0), m_column(-1), m_root(nullptr){}
 int Union_Find::GroupOfNodes::get_num_of_members() const {
     return m_num_of_members;
 }
@@ -246,7 +249,7 @@ void Union_Find::GroupOfNodes::set_num_of_members(int num_elements) {
     m_num_of_members = num_elements;
 }
 int Union_Find::GroupOfNodes::get_height() const {
-    m_height;
+    return m_height;
 }
 void Union_Find::GroupOfNodes::set_height(int num) {
     m_height = num;

@@ -4,8 +4,8 @@
 #include "cassert"
 #include "Record.h"
 
-#ifndef GROUP_CPP_UNION_FIND_H
-#define GROUP_CPP_UNION_FIND_H
+#ifndef UNION_FIND_H
+#define UNION_FIND_H
 
 
 
@@ -119,4 +119,4 @@ public:
 
 
 
-#endif //GROUP_CPP_UNION_FIND_H
+#endif //UNION_FIND_H
