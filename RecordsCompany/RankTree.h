@@ -552,8 +552,8 @@ public:
 
 
     //insert a new node to a tree while keeping it avl balanced
-    Node* insert(Node* source, const T& key, bool* just_inserted, bool* updated_the_boolean) { //initialize the
-        // boolean to false
+    Node* insert(Node* source, const T& key, bool* just_inserted, bool* updated_the_boolean) {
+        // initialize the boolean to false
         // to false;
         if (source == nullptr) {
             //updates m_data, m_ptr_left, m_ptr_right and the rest - constructor
@@ -813,7 +813,7 @@ public:
 
 
     // HELPER FUNCTIONS
-private:
+public:
     // updates a height and a balance factor of a given node + all nodes above till root
     void recursive_update(Node* main_root, Node* curr) {
         if (curr == main_root) {
@@ -958,6 +958,8 @@ public:
             }
         }
     }
+
+
 
 };
 
