@@ -285,6 +285,8 @@ private:
                 parent->m_ptr_left->m_ptr_father = parent;
             }
         }
+
+
         int not_updated_prize_for_A = acumulated_sum(tempA);
         if (not_updated_prize_for_A != tempA->m_prize2)  {
             tempA->m_prize = tempA->m_prize2 - (not_updated_prize_for_A - tempA->m_prize);

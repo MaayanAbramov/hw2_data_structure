@@ -15,7 +15,7 @@ class Union_Find
 public:
     class Node;
     class GroupOfNodes;
-private:
+
     Node* m_elements; //array of Nodes
     GroupOfNodes* m_groups;//array of groups
     int m_size = 0;
@@ -36,9 +36,9 @@ public:
     void newMonth(int* records_stock, int num_of_records);
     Record* find_root_of_heap(int item);
     //this function also shrunken
-    GroupOfNodes* find_group(int r_id) const;
+    GroupOfNodes * find_group(int r_id);
     GroupOfNodes* Union(GroupOfNodes* group_1_up, GroupOfNodes* group_2_down);
-
+    void shrink_the_tree_path(Node* curr_node, Node* root,int acumulated_sum_height, int balance_factor);
 
 
 
@@ -80,7 +80,6 @@ public:
         Record* m_record;
         GroupOfNodes* m_group;
         Node* m_father;
-        Node* m_son;
         int global_height;
 
         friend class Union_Find;
@@ -98,8 +97,8 @@ public:
         void set_record(Record* r);
         GroupOfNodes* get_group() const;
         void set_group(GroupOfNodes* g);
-        Node* get_son() const;
-        void set_son(Node* );
+        /*Node* get_son() const;
+        void set_son(Node* );*/
         void set_father(Node*);
         Node* get_father() const;
         static Node* find_root(Node *node);

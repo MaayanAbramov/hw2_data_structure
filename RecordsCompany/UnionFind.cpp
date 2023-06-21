@@ -35,31 +35,33 @@ int Union_Find::get_height(int r_id) const {
     return recursive_height_sum(node);
 
 }
+void Union_Find::shrink_the_tree_path(Union_Find::Node* curr_node, Union_Find::Node* root,int acumulated_sum_height,
+                                      int balance_factor) {
+    if (curr_node->m_father == nullptr) {
+        return;
+    }
+    int old = curr_node->global_height;
+    curr_node->global_height = acumulated_sum_height - balance_factor;
+    balance_factor += old;
+    Node* father = curr_node->m_father;
+    curr_node->m_father = root;
+    shrink_the_tree_path(father, root, acumulated_sum_height, balance_factor);
 
-Union_Find::GroupOfNodes* Union_Find::find_group(int r_id) const {
+}
+
+Union_Find::GroupOfNodes * Union_Find::find_group(int r_id) {
+
     Node* ptr_to_record_node = &m_elements[r_id];
-    int acumulated_global_sum = recursive_height_sum(ptr_to_record_node);
+    int acumulated_sum = recursive_height_sum(ptr_to_record_node);
+    GroupOfNodes* group_of_node = ptr_to_record_node->m_group;
+
 
     //like the boxes question from the turtorial
-    bool OK1 = true;
     Node* root = Node::find_root(ptr_to_record_node);
-    int sum = 0;
-    Node* runner = root->m_son;
-    while (OK1 && runner != nullptr) {
-        sum += runner->get_global_height();
-        runner->set_global_height(sum);
-        runner->set_father(root);
-        if (runner->get_son() != nullptr) {
-            Node* temp = runner->get_son();
-            runner->set_son(nullptr);
-            runner = temp;
-        }
-        else {
-            OK1 = false;
-        }
-    }
-    GroupOfNodes* my_group = ptr_to_record_node->get_group();
-    return my_group;
+    int balance_factor = 0;
+    shrink_the_tree_path(ptr_to_record_node, root, acumulated_sum, balance_factor);
+
+    return group_of_node;
 
 }
 
@@ -123,7 +125,7 @@ void Union_Find::newMonth(int* records_stock, int num_of_records)  {
     }
 
     //deleted all the old data
-    this->~Union_Find();
+    //this->~Union_Find();
 
     //now updating the data
     int actual_size=0;
@@ -152,6 +154,7 @@ void Union_Find::newMonth(int* records_stock, int num_of_records)  {
         updated_node_array[i].m_group = &updated_group_array[i];
 
     }
+    this->~Union_Find();
     m_elements = updated_node_array;
     m_groups = updated_group_array;
     m_size = num_of_records;
@@ -184,7 +187,6 @@ Union_Find::Node::Node()  {
 void Union_Find::Node::resetNode() {
     this->m_record = nullptr;
     this->m_father = nullptr;
-    this->m_son = nullptr;
     this->m_group = nullptr;
 }
 Union_Find::Node::~Node() {
@@ -205,12 +207,12 @@ Union_Find::GroupOfNodes* Union_Find::Node::get_group() const {
 void Union_Find::Node::set_group(GroupOfNodes* g) {
     m_group = g;
 }
-Union_Find::Node* Union_Find::Node::get_son() const {
+/*Union_Find::Node* Union_Find::Node::get_son() const {
     return m_son;
 }
 void Union_Find::Node::set_son(Node* s) {
     m_son = s;
-}
+}*/
 
 void Union_Find::Node::set_father(Node* father) {
     m_father = father;

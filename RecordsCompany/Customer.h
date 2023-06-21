@@ -2,8 +2,8 @@
 // Created by maaya on 04/06/2023.
 //
 
-#ifndef RECORDSCOMPANY_COSTUMER_H
-#define RECORDSCOMPANY_COSTUMER_H
+#ifndef RECORDSCOMPANY_CUSTOMER_H
+#define RECORDSCOMPANY_CUSTOMER_H
 
 //#include "recordsCompany.h"
 #include <iostream>
@@ -41,4 +41,4 @@ public:
 };
 
 
-#endif //RECORDSCOMPANY_COSTUMER_H
+#endif //RECORDSCOMPANY_CUSTOMER_H
