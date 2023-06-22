@@ -1,0 +1,20 @@
+C:\windows\system32\wsl.exe --distribution Ubuntu-20.04 --exec /bin/bash -c "cd /mnt/c/Users/maaya/CLionProjects/RecordsCompany/cmake-build-debug && /mnt/c/Users/maaya/CLionProjects/RecordsCompany/cmake-build-debug/RecordsCompany; exitcode=$?; sleep 0.001; (exit $exitcode)"
+addCostumer: SUCCESS
+addCostumer: SUCCESS
+getPhone: 94069
+newMonth: SUCCESS
+makeMember: SUCCESS
+isMember: False
+makeMember: SUCCESS
+buyRecord: SUCCESS
+buyRecord: SUCCESS
+getExpenses: 100
+addPrize: SUCCESS
+getExpenses: 55
+putOnTop: SUCCESS
+putOnTop: SUCCESS
+getPlace: column=37, hight=12
+getPlace: column=37, hight=1
+getPlace: column=37, hight=0
+
+Process finished with exit code 0
