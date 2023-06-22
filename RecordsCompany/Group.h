@@ -7,15 +7,15 @@
 
 #include "AvlTree.h"
 #include "Record.h"
-#include "Costumer.h"
+#include "Customer.h"
 
 class Group {
     int m_id;
-    AvlTree<Costumer *> m_tree_group;
+    AvlTree<Customer *> m_tree_group;
 
 public :
-    Group(int id) : m_id(id), m_tree_group(AvlTree<Costumer*>()) {}
-    AvlTree<Costumer *>& get_group_tree() {
+    Group(int id) : m_id(id), m_tree_group(AvlTree<Customer*>()) {}
+    AvlTree<Customer *>& get_group_tree() {
         return m_tree_group;
     }
 

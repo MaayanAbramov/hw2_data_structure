@@ -6,23 +6,32 @@
 
 /*------------the implementation of union find class------------*/
 Union_Find::~Union_Find() {
+    delete[] m_elements;
+    delete[] m_groups;
 
-    if (m_elements)
-        delete[] m_elements;
-    if(m_groups)
-        delete[] m_groups;
     m_size = 0;
     m_elements = nullptr;
     m_groups = nullptr;
 
 }
 
+
+// getters and setters
 Record* Union_Find::get_record_from_array(int r_id) const {
     return m_elements[r_id].get_record();
 }
+
 int Union_Find::get_size() const {
     return m_size;
 }
+
+int Union_Find::get_height(int r_id) const {
+    Node* node = &m_elements[r_id];
+    return recursive_height_sum(node);
+}
+
+
+// aux func
 int Union_Find::recursive_height_sum(Node* curr_node) const {
     if (curr_node == nullptr) {
         return 0;
@@ -30,11 +39,7 @@ int Union_Find::recursive_height_sum(Node* curr_node) const {
     return curr_node->get_global_height() + recursive_height_sum(curr_node->get_father());
 }
 
-int Union_Find::get_height(int r_id) const {
-    Node* node = &m_elements[r_id];
-    return recursive_height_sum(node);
 
-}
 void Union_Find::shrink_the_tree_path(Union_Find::Node* curr_node, Union_Find::Node* root,int acumulated_sum_height,
                                       int balance_factor) {
     if (curr_node->m_father == nullptr) {
@@ -46,15 +51,12 @@ void Union_Find::shrink_the_tree_path(Union_Find::Node* curr_node, Union_Find::N
     Node* father = curr_node->m_father;
     curr_node->m_father = root;
     shrink_the_tree_path(father, root, acumulated_sum_height, balance_factor);
-
 }
 
 Union_Find::GroupOfNodes * Union_Find::find_group(int r_id) {
 
     Node* ptr_to_record_node = &m_elements[r_id];
     int acumulated_sum = recursive_height_sum(ptr_to_record_node);
-
-
 
 
     //like the boxes question from the turtorial
@@ -64,7 +66,6 @@ Union_Find::GroupOfNodes * Union_Find::find_group(int r_id) {
     shrink_the_tree_path(ptr_to_record_node, root, acumulated_sum, balance_factor);
 
     return group_of_node;
-
 }
 
 //group_1_up contains more elements
@@ -103,80 +104,64 @@ Union_Find::GroupOfNodes* Union_Find::Union(GroupOfNodes* group_1_up, GroupOfNod
 
 
     }
-
 }
 
 void Union_Find::newMonth(int* records_stock, int number_of_records)  {
     if(number_of_records == 0){
-        if(m_elements != nullptr){
-            delete[] m_elements;
-        }
-        if(m_groups != nullptr){
-            delete[] m_groups;
-        }
+        delete[] m_elements;
+        delete[] m_groups;
+
         m_elements = nullptr;
         m_groups = nullptr;
         m_size = number_of_records;
         return;
     }
+
     Node* tempElements = new Node[number_of_records];
-    GroupOfNodes* tempGroups = nullptr;
-    try{
+    GroupOfNodes* tempGroups;
+
+    try {
         tempGroups = new GroupOfNodes[number_of_records];
-    } catch(std::bad_alloc& e){
+    } catch(std::bad_alloc& e) {
         delete[] tempElements;
         throw;
     }
+
     int initalized = 0;
     try{
         for(int i = 0; i < number_of_records; ++i){
-            tempElements[i].m_record=new Record(i,records_stock[i], 0);
+            tempElements[i].m_record = new Record(i,records_stock[i], 0);
             ++initalized;
         }
 
-    } catch(std::bad_alloc& e){
+        for(int i = 0; i < number_of_records; ++i){
+            tempGroups[i].m_root = &tempElements[i];
+            tempGroups[i].m_height = (tempElements[i].m_record->get_num_of_copies());
+            tempGroups[i].m_column = (tempElements[i].m_record->get_r_id());
+            tempGroups[i].m_num_of_members = 1;
+            tempElements[i].m_group = &tempGroups[i];
+        }
+        delete[] m_elements;
+        delete[] m_groups;
+
+        m_elements = tempElements;
+        m_groups = tempGroups;
+        m_size = number_of_records;
+
+    } catch(std::bad_alloc& e) {
         for(int i = 0; i < initalized; ++i){
             delete tempElements[i].m_record;
         }
         delete[] tempElements;
         delete[] tempGroups;
     }
-
-    for(int i=0; i< number_of_records; ++i){
-        tempGroups[i].m_root = &tempElements[i];
-        tempGroups[i].m_height = (tempElements[i].m_record->get_num_of_copies());
-        tempGroups[i].m_column = (tempElements[i].m_record->get_r_id());
-        tempGroups[i].m_num_of_members = 1;
-        tempElements[i].m_group = &tempGroups[i];
-    }
-    if(m_elements != nullptr){
-        delete[] m_elements;
-    }
-    if(m_groups != nullptr){
-        delete[] m_groups;
-    }
-    m_elements = tempElements;
-    m_groups = tempGroups;
-    m_size = number_of_records;
-
-
-
-
-
 }
 
 
 
 
 
-
-
-
-
-
-
 /*----------------the implementation of the node class-----------------*/
-
 
 Union_Find::Node::Node()  {
     resetNode();
@@ -193,19 +178,40 @@ Union_Find::Node::~Node() {
     resetNode();
 }
 
+
+// getters and setters
 Record* Union_Find::Node::get_record() const {
     return m_record;
 }
-void Union_Find::Node::set_record(Record* r) {
-    m_record = r;
-}
+
 Union_Find::GroupOfNodes* Union_Find::Node::get_group() const {
     return m_group;
+}
+
+Union_Find::Node* Union_Find::Node::get_father() const {
+    return m_father;
+}
+
+int Union_Find::Node::get_global_height() const {
+    return global_height;
+}
+
+void Union_Find::Node::set_record(Record* r) {
+    m_record = r;
 }
 
 void Union_Find::Node::set_group(GroupOfNodes* g) {
     m_group = g;
 }
+
+void Union_Find::Node::set_father(Node* father) {
+    m_father = father;
+}
+
+void Union_Find::Node::set_global_height(int num) {
+    global_height = num;
+}
+
 /*Union_Find::Node* Union_Find::Node::get_son() const {
     return m_son;
 }
@@ -213,15 +219,14 @@ void Union_Find::Node::set_son(Node* s) {
     m_son = s;
 }*/
 
-void Union_Find::Node::set_father(Node* father) {
-    m_father = father;
-}
-Union_Find::Node* Union_Find::Node::get_father() const {
-    return m_father;
-}
+
 
 Union_Find::Node* Union_Find::Node::find_root(Node *node) {
-    assert(node != nullptr);
+    // if there is no nodes
+    if (node == nullptr) {
+        return nullptr;
+    }
+
     Node* temp = node;
     while (temp->m_father)
     {
@@ -230,44 +235,38 @@ Union_Find::Node* Union_Find::Node::find_root(Node *node) {
     return temp;
 }
 
-int Union_Find::Node::get_global_height() const {
-    return global_height;
-}
-void Union_Find::Node::set_global_height(int num) {
-    global_height = num;
-}
 
 /*--------------------the implementation of the group of nodes class---------------*/
 
 
+
 /*------------------the implementation of the groups of nodes class--------*/
-Union_Find::GroupOfNodes::GroupOfNodes() : m_num_of_members(1), m_height(0), m_column(-1), m_root(nullptr){}
+Union_Find::GroupOfNodes::GroupOfNodes(): m_num_of_members(1), m_height(0), m_column(-1), m_root(nullptr) {}
+
+
+// getters and setters
 int Union_Find::GroupOfNodes::get_num_of_members() const {
     return m_num_of_members;
+}
+int Union_Find::GroupOfNodes::get_height() const {
+    return m_height;
+}
+int Union_Find::GroupOfNodes::get_column() const {
+    return m_column;
+}
+Union_Find::Node* Union_Find::GroupOfNodes::get_root() const {
+    return m_root;
 }
 
 void Union_Find::GroupOfNodes::set_num_of_members(int num_elements) {
     m_num_of_members = num_elements;
 }
-int Union_Find::GroupOfNodes::get_height() const {
-    return m_height;
-}
 void Union_Find::GroupOfNodes::set_height(int num) {
     m_height = num;
-}
-
-
-int Union_Find::GroupOfNodes::get_column() const {
-    return m_column;
 }
 void Union_Find::GroupOfNodes::set_column(int column) {
     m_column = column;
 }
-Union_Find::Node* Union_Find::GroupOfNodes::get_root() const {
-    return m_root;
-}
 void Union_Find::GroupOfNodes::set_root(Node* root) {
     m_root = root;
 }
-
-

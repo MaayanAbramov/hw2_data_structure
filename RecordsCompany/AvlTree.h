@@ -81,7 +81,6 @@ public:
         else if (main_root->m_data > key) {
             return is_key_exists(main_root->m_ptr_left, key);
         }
-        //cout << "is_key_exists | got out from the false that Reuven added" << endl;
         return false; // doesn't suppose to get here
     }
 

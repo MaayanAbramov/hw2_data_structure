@@ -1,14 +1,11 @@
 
 #include <cstdio>
-#include <exception>
+#include <stdexcept>
 #include "cassert"
 #include "Record.h"
 
 #ifndef UNION_FIND_H
 #define UNION_FIND_H
-
-
-
 
 class Union_Find
 {
@@ -27,24 +24,23 @@ public:
     ~Union_Find();
     Union_Find& operator=(const Union_Find& other) = delete;
     Union_Find(const Union_Find& other) = delete;
+
+    /*--------------aux func-------*/
+    int recursive_height_sum(Node* ) const;
+
     /*--------------getters and setters-------*/
     Record* get_record_from_array(int r_id) const;
     int get_size() const;
-    int recursive_height_sum(Node* ) const;
     int get_height(int r_id) const;
+
     /*----------------process functions------*/
     void newMonth(int* records_stock, int num_of_records);
     Record* find_root_of_heap(int item);
     //this function also shrunken
-    GroupOfNodes * find_group(int r_id);
+    GroupOfNodes* find_group(int r_id);
     GroupOfNodes* Union(GroupOfNodes* group_1_up, GroupOfNodes* group_2_down);
     void shrink_the_tree_path(Node* curr_node, Node* root,int acumulated_sum_height, int balance_factor);
 
-
-
-
-
-public:
 
     class GroupOfNodes {
     public:
@@ -84,8 +80,8 @@ public:
 
         friend class Union_Find;
 
-        /*-----------------the big three-----------*/
     public:
+        /*-----------------the big three-----------*/
         Node();
         void resetNode();
         ~Node();
@@ -104,18 +100,7 @@ public:
         static Node* find_root(Node *node);
         int get_global_height() const;
         void set_global_height(int global_height);
-
-
-
-
     };
-
-
 };
-
-
-
-
-
 
 #endif //UNION_FIND_H
