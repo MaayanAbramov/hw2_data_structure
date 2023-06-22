@@ -13,7 +13,7 @@ class Customer {
     int m_c_id;
     int m_phone_num;
     bool m_is_member;
-    int m_expenses;
+    double m_expenses;
 
 public:
     Customer(int id, int phone, bool member) : m_c_id(id), m_phone_num(phone), m_is_member(member), m_expenses(0) {}
@@ -25,12 +25,12 @@ public:
     int get_id() const;
     int get_phone() const;
     bool get_is_member() const;
-    int get_expenses() const;
+    double get_expenses() const;
 
     void set_id(int id);
     void set_phone(int phone);
     void set_is_member(bool is_member);
-    void set_expenses(int expenses);
+    void set_expenses(double expenses);
 
     // operator overloading
 

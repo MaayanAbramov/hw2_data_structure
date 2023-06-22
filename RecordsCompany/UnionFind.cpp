@@ -53,11 +53,13 @@ Union_Find::GroupOfNodes * Union_Find::find_group(int r_id) {
 
     Node* ptr_to_record_node = &m_elements[r_id];
     int acumulated_sum = recursive_height_sum(ptr_to_record_node);
-    GroupOfNodes* group_of_node = ptr_to_record_node->m_group;
+
+
 
 
     //like the boxes question from the turtorial
     Node* root = Node::find_root(ptr_to_record_node);
+    GroupOfNodes* group_of_node = root->m_group;
     int balance_factor = 0;
     shrink_the_tree_path(ptr_to_record_node, root, acumulated_sum, balance_factor);
 
@@ -104,61 +106,58 @@ Union_Find::GroupOfNodes* Union_Find::Union(GroupOfNodes* group_1_up, GroupOfNod
 
 }
 
-void Union_Find::newMonth(int* records_stock, int num_of_records)  {
-    if (num_of_records == 0) {
-        this->~Union_Find();
+void Union_Find::newMonth(int* records_stock, int number_of_records)  {
+    if(number_of_records == 0){
+        if(m_elements != nullptr){
+            delete[] m_elements;
+        }
+        if(m_groups != nullptr){
+            delete[] m_groups;
+        }
+        m_elements = nullptr;
+        m_groups = nullptr;
+        m_size = number_of_records;
         return;
     }
-    Node* updated_node_array = nullptr;
-    try {
-        updated_node_array = new Node[num_of_records];
-    } catch(std::bad_alloc& e) {
-        delete[] updated_node_array;
+    Node* tempElements = new Node[number_of_records];
+    GroupOfNodes* tempGroups = nullptr;
+    try{
+        tempGroups = new GroupOfNodes[number_of_records];
+    } catch(std::bad_alloc& e){
+        delete[] tempElements;
         throw;
     }
-    GroupOfNodes* updated_group_array = nullptr;
-    try {
-        updated_group_array = new GroupOfNodes[num_of_records];
-    } catch (std::bad_alloc& e) {
-        delete[] updated_group_array;
-        throw;
-    }
-
-    //deleted all the old data
-    //this->~Union_Find();
-
-    //now updating the data
-    int actual_size=0;
-    try {
-
-        for (int i = 0; i < num_of_records ; i++) {
-            updated_node_array[i].m_record = new Record(i, records_stock[i], 0);
-            actual_size++;
+    int initalized = 0;
+    try{
+        for(int i = 0; i < number_of_records; ++i){
+            tempElements[i].m_record=new Record(i,records_stock[i], 0);
+            ++initalized;
         }
-    } catch (std::bad_alloc& e) {
-        for (int i = 0 ; i < actual_size ; i++) {
-            delete updated_node_array[i].m_record;
+
+    } catch(std::bad_alloc& e){
+        for(int i = 0; i < initalized; ++i){
+            delete tempElements[i].m_record;
         }
-        delete[] updated_node_array;
-        delete[] updated_group_array;
+        delete[] tempElements;
+        delete[] tempGroups;
     }
 
-    for (int i = 0 ; i < num_of_records ; i++) {
-        updated_group_array[i].m_num_of_members = 1;
-        //the height will be the amount of copies
-        //check if it should be zero instead
-        updated_group_array[i].m_height = updated_node_array[i].m_record->get_num_of_copies();
-        //the bottom is the record hiself
-        updated_group_array[i].m_column = updated_node_array[i].m_record->get_r_id();
-        updated_group_array[i].m_root = &updated_node_array[i];
-        updated_node_array[i].m_group = &updated_group_array[i];
-
+    for(int i=0; i< number_of_records; ++i){
+        tempGroups[i].m_root = &tempElements[i];
+        tempGroups[i].m_height = (tempElements[i].m_record->get_num_of_copies());
+        tempGroups[i].m_column = (tempElements[i].m_record->get_r_id());
+        tempGroups[i].m_num_of_members = 1;
+        tempElements[i].m_group = &tempGroups[i];
     }
-    this->~Union_Find();
-    m_elements = updated_node_array;
-    m_groups = updated_group_array;
-    m_size = num_of_records;
-
+    if(m_elements != nullptr){
+        delete[] m_elements;
+    }
+    if(m_groups != nullptr){
+        delete[] m_groups;
+    }
+    m_elements = tempElements;
+    m_groups = tempGroups;
+    m_size = number_of_records;
 
 
 

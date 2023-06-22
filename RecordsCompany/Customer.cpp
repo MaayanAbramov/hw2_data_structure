@@ -15,7 +15,7 @@ int Customer::get_phone() const{
 bool Customer::get_is_member() const{
     return m_is_member;
 }
-int Customer::get_expenses() const {
+double Customer::get_expenses() const {
     return m_expenses;
 }
 
@@ -28,7 +28,7 @@ void Customer::set_phone(int phone) {
 void Customer::set_is_member(bool is_member) {
     m_is_member= is_member;
 }
-void Customer::set_expenses(int expenses) {
+void Customer::set_expenses(double expenses) {
     m_expenses = expenses;
 }
 
@@ -36,15 +36,15 @@ void Customer::set_expenses(int expenses) {
 // operator overloading
 
 bool operator==(const Customer& Customer1, const Customer& Customer2) {
-    return Customer1.m_c_id == Customer2.m_c_id;
+    return Customer1.get_id() == Customer2.get_id();
 }
 
 bool operator<(const Customer& Customer1, const Customer& Customer2) {
-    return Customer1.m_c_id < Customer2.m_c_id;
+    return Customer1.get_id() < Customer2.get_id();
 }
 
 bool operator>(const Customer& Customer1, const Customer& Customer2) {
-    return Customer1.m_c_id > Customer2.m_c_id;
+    return Customer1.get_id() > Customer2.get_id();
 }
 
 Customer& Customer::operator=(const Customer& Customer){

@@ -37,7 +37,7 @@ public:
         explicit Node(const T &data) : m_data(data), m_height(H_OF_LEAF), m_balance_factor(0), m_prize(0), m_prize2(0),
                                        m_ptr_left(nullptr),m_ptr_right(nullptr), m_ptr_father(nullptr) {}
         T getData(){return this->m_data;}
-        int getPrize() {return this->m_prize;}
+        double getPrize() {return this->m_prize;}
     };
 
 public:
@@ -78,13 +78,13 @@ public:
             return false;
         }
 
-        if (main_root->m_data == key) {
+        if ((*m_getter)(main_root->m_data) == (*m_getter)(key)) {
             return true;
         }
-        else if (main_root->m_data < key){
+        else if ((*m_getter)(main_root->m_data) < (*m_getter)(key)){
             return is_key_exists(main_root->m_ptr_right, key);
         }
-        else if (main_root->m_data > key) {
+        else if ((*m_getter)(main_root->m_data) > (*m_getter)(key)) {
             return is_key_exists(main_root->m_ptr_left, key);
         }
         //cout << "is_key_exists | got out from the false that Reuven added" << endl;
@@ -103,14 +103,14 @@ public:
         }
         //RankTree::Node* ptr_found;
 
-        if (ptr_node->m_data == key) {
+        if ((*m_getter)(ptr_node->m_data) == (*m_getter)(key)) {
             //cout << "I found the pointer of "<< ptr_node->m_data << endl;
             //cout << "and the pointer is " << ptr_node << endl;
 
             //ptr_found = ptr_node;
             return &(ptr_node->m_data);
         }
-        else if (ptr_node->m_data < key) {
+        else if ((*m_getter)(ptr_node->m_data) < (*m_getter)(key)) {
             //cout << " curr val of a node is less than key | " << endl;
             //cout << " curr val of a node is: " << ptr_node->m_data << endl;
             return find_pointer_t(ptr_node->m_ptr_right, key);
@@ -128,14 +128,14 @@ public:
         }
         //RankTree::Node* ptr_found;
 
-        if (ptr_node->m_data == key) {
+        if ((*m_getter)(ptr_node->m_data) == (*m_getter)(key)) {
             //cout << "I found the pointer of "<< ptr_node->m_data << endl;
             //cout << "and the pointer is " << ptr_node << endl;
 
             //ptr_found = ptr_node;
             return ptr_node;
         }
-        else if (ptr_node->m_data < key) {
+        else if ((*m_getter)(ptr_node->m_data) < (*m_getter)(key)) {
             //cout << " curr val of a node is less than key | " << endl;
             //cout << " curr val of a node is: " << ptr_node->m_data << endl;
             return find_pointer_node(ptr_node->m_ptr_right, key);
@@ -586,7 +586,7 @@ public:
             return source;
         }
 
-        else if(source->m_data > key) {
+        else if((*m_getter)(source->m_data) > (*m_getter)(key)) {
             //source->m_height++;
             auto temp = insert(source->m_ptr_left, key, just_inserted, updated_the_boolean);
             source->m_ptr_left = temp;
@@ -607,7 +607,7 @@ public:
             //source->m_ptr_father = find_father(ptr_main_root, source->m_data); // TODO: check if it works
         }
 
-        else if (source->m_data < key) {
+        else if ((*m_getter)(source->m_data) < (*m_getter)(key)) {
             //source->m_height++;
             auto temp = insert(source->m_ptr_right, key, just_inserted, updated_the_boolean);
             source->m_ptr_right = temp;
@@ -626,6 +626,8 @@ public:
         ptr_main_root = find_main_root(source);
         return source;
     }
+
+
 public:
     Node* find_main_root(Node* node) {
         if (node == nullptr) {
@@ -984,18 +986,24 @@ public:
         }
 
         else if ((*m_getter)(curr_node->m_data) < val_to_find) {
-            return find_closest_min(curr_node->m_ptr_right, val_to_find, curr_min);
+            if (curr_node->m_ptr_right != nullptr) {
+                return find_closest_min(curr_node->m_ptr_right, val_to_find, curr_min);
+            }
+            return curr_node;
         }
 
         else {
-            return find_closest_min(curr_node->m_ptr_left, val_to_find, (*m_getter)(curr_node->m_data));
+            if (curr_node->m_ptr_left != nullptr) {
+                return find_closest_min(curr_node->m_ptr_left, val_to_find, (*m_getter)(curr_node->m_data));
+            }
+            return curr_node;
         }
 
         return nullptr;
     }
 
 // finds the closest value to max bound (returns val that is <= max)
-    Node* find_closest_max(Node* curr_node, int val_to_find, int curr_max) {
+    Node* find_closest_max(Node* curr_node, int val_to_find, Node* curr_max) {
         if (curr_node == nullptr) {
             return nullptr;
         }
@@ -1005,11 +1013,20 @@ public:
         }
 
         else if ((*m_getter)(curr_node->m_data) < val_to_find) {
-            return find_closest_max(curr_node->m_ptr_right, val_to_find, (*m_getter)(curr_node->m_data));
+            if (curr_max == nullptr || (*m_getter)(curr_node->m_data) > (*m_getter)(curr_max->m_data))  {
+                curr_max = curr_node;
+            }
+            if (curr_node->m_ptr_right != nullptr) {
+                return find_closest_max(curr_node->m_ptr_right, val_to_find,curr_max);
+            }
+            return curr_max;
         }
 
         else {
-            return find_closest_max(curr_node->m_ptr_left, val_to_find, curr_max);
+            if (curr_node->m_ptr_left != nullptr) {
+                return find_closest_max(curr_node->m_ptr_left, val_to_find, curr_max);
+            }
+            return curr_max;
         }
 
         return nullptr;
@@ -1021,7 +1038,7 @@ public:
         }
 
         else if ((*m_getter)(curr_node->m_data) == upper_bound) {
-            if (is_last_turn_right) {
+            if (!is_last_turn_right) {
                 curr_node->m_prize += amount;
             }
             if (curr_node->m_ptr_right != nullptr) {

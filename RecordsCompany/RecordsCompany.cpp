@@ -87,7 +87,8 @@ StatusType RecordsCompany::makeMember(int c_id) {
             return StatusType::INVALID_INPUT;
         }
 
-        Customer* curr_customer = m_all_costumers.find(c_id);
+        auto curr_customer = m_all_costumers.find(c_id);
+
 
         // checks if the customer doesn't exist
         if (curr_customer == nullptr) {
@@ -163,15 +164,20 @@ StatusType RecordsCompany::addPrize(int c_id1, int c_id2, double  amount) {
     if (c_id1 < 0 || c_id2 < 0 || amount <= 0) {
         return StatusType::INVALID_INPUT;
     }
+    RankTree<Customer *>::Node * temp = nullptr;
+    auto upper_bound = m_vip_costumers.find_closest_max(m_vip_costumers.ptr_main_root, c_id2,temp);
+    temp = nullptr;
+    auto lower_bound = m_vip_costumers.find_closest_max(m_vip_costumers.ptr_main_root, c_id1, temp);
 
-    auto upper_bound = m_vip_costumers.find_closest_max(m_vip_costumers.ptr_main_root, c_id2, -1);
-    auto lower_bound = m_vip_costumers.find_closest_min(m_vip_costumers.ptr_main_root, c_id1-1, c_id1);
+    //auto lower_bound = m_vip_costumers.find_closest_min(m_vip_costumers.ptr_main_root, c_id1, 2147483647); // was
+    // c_id1 - 1
     if (upper_bound == nullptr && lower_bound == nullptr) {
         return StatusType::SUCCESS;
     }
      //update here
     m_vip_costumers.add_amount(m_vip_costumers.ptr_main_root, false, upper_bound->m_data->get_id(), amount);
-    m_vip_costumers.add_amount(m_vip_costumers.ptr_main_root, false, lower_bound->m_data->get_id(), -amount);
+    m_vip_costumers.add_amount(m_vip_costumers.ptr_main_root, false, lower_bound->m_data->get_id(), -amount); // was
+    // -amount
 
     return StatusType::SUCCESS;
 }

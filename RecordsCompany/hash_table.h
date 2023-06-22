@@ -81,6 +81,7 @@ public:
 
     T * find(int key);
 
+
     void assignObjectsToArray(typename AvlTree<object>::Node* node, object* arr);
     void changeSizeIfNeeded();
 
@@ -167,7 +168,8 @@ hash_table<T>::~hash_table() {
 
 template <class T>
 int hash_table<T>::hash(int key) {
-    return key % m_size;
+    int hash_num = key % m_size;
+    return hash_num;
 }
 
 template <class T>
@@ -182,9 +184,9 @@ T * hash_table<T>::find(int key)  {
         return nullptr;
     }
     else {
-        object* toReturn = current_tree->find_pointer_t(current_tree->ptr_main_root, toFind);
+        auto toReturn = current_tree->find_pointer_node(current_tree->ptr_main_root, toFind);
 
-        return toReturn->get_object();
+        return toReturn->m_data.m_object;
     }
 }
 
