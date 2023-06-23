@@ -216,12 +216,12 @@ void hash_table<T>::changeSizeIfNeeded() {
             auto arr = new object[elems_in_tree_ob];
             assignObjectsToArray(tree_ob->ptr_main_root, arr);
 
-            //test
+            /*//test
             for (int k = 0 ; k < elems_in_tree_ob ; k++) {
                 object* current_obj = &arr[k];
                 assert(current_obj->m_key != -1); //checks if the array didn't initialize well
 
-            }
+            }*/
             for (int j = 0 ; j < elems_in_tree_ob ; j++) {
 
                 object* current_obj = &arr[j];

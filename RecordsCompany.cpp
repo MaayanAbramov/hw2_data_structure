@@ -164,6 +164,9 @@ StatusType RecordsCompany::addPrize(int c_id1, int c_id2, double  amount) {
     if (c_id1 < 0 || c_id2 < 0 || amount <= 0) {
         return StatusType::INVALID_INPUT;
     }
+    if (c_id1 > c_id2) {
+        return StatusType::INVALID_INPUT;
+    }
     RankTree<Customer *>::Node * temp = nullptr;
     auto upper_bound = m_vip_costumers.find_closest_max(m_vip_costumers.ptr_main_root, c_id2,temp);
     temp = nullptr;
@@ -176,8 +179,10 @@ StatusType RecordsCompany::addPrize(int c_id1, int c_id2, double  amount) {
     }
      //update here
     m_vip_costumers.add_amount(m_vip_costumers.ptr_main_root, false, upper_bound->m_data->get_id(), amount);
-    m_vip_costumers.add_amount(m_vip_costumers.ptr_main_root, false, lower_bound->m_data->get_id(), -amount); // was
-    // -amount
+
+    if (lower_bound != nullptr) {
+        m_vip_costumers.add_amount(m_vip_costumers.ptr_main_root, false, lower_bound->m_data->get_id(), -amount);
+    }
 
     return StatusType::SUCCESS;
 }
@@ -191,13 +196,10 @@ Output_t<double> RecordsCompany::getExpenses(int c_id) {
     Customer* curr_customer = m_all_costumers.find(c_id);
 
     // checks if the customer doesn't exist or if he is not a member
-    if (curr_customer == nullptr) {
+    if (curr_customer == nullptr || !curr_customer->get_is_member()) {
         return StatusType::DOESNT_EXISTS;
     }
 
-    if (!curr_customer->get_is_member()) {
-        return 0;
-    }
     else {
         auto ptr_node_customer = m_vip_costumers.find_pointer_node(m_vip_costumers.ptr_main_root,curr_customer);
         double prize = m_vip_costumers.acumulated_sum(ptr_node_customer);

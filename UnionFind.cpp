@@ -31,7 +31,7 @@ int Union_Find::recursive_height_sum(Node* curr_node, Node* root) const {
 }
 
 int Union_Find::get_height(int r_id) const {
-    int height = 0;
+
     Node* element = &m_elements[r_id];
     Node* root = Node::find_root(element);
 
