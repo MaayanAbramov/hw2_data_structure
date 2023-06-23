@@ -1,106 +1,321 @@
 
-#include <cstdio>
-#include <stdexcept>
-#include "cassert"
-#include "Record.h"
-
 #ifndef UNION_FIND_H
 #define UNION_FIND_H
 
-class Union_Find
-{
-public:
-    class Node;
-    class GroupOfNodes;
+#include "Record.h"
 
-    Node* m_elements; //array of Nodes
-    GroupOfNodes* m_groups;//array of groups
-    int m_size = 0;
-    Node* find_root_of_heap_aux(int item);
+
+class UnionFind{
 
 public:
-    /*---------------the big three---------*/
-    explicit Union_Find() : m_elements(nullptr), m_groups(nullptr), m_size(0){}
-    ~Union_Find();
-    Union_Find& operator=(const Union_Find& other) = delete;
-    Union_Find(const Union_Find& other) = delete;
 
-    /*--------------aux func-------*/
-    int recursive_height_sum(Node* ) const;
+    class Group;
+    class Element;
 
-    /*--------------getters and setters-------*/
-    Record* get_record_from_array(int r_id) const;
-    int get_size() const;
-    int get_height(int r_id) const;
+    /* UnionFind - constructor for the class*/
+    UnionFind();
 
-    /*----------------process functions------*/
-    void newMonth(int* records_stock, int num_of_records);
-    Record* find_root_of_heap(int item);
-    //this function also shrunken
-    GroupOfNodes* find_group(int r_id);
-    GroupOfNodes* Union(GroupOfNodes* group_1_up, GroupOfNodes* group_2_down);
-    void shrink_the_tree_path(Node* curr_node, Node* root,int acumulated_sum_height, int balance_factor);
+    /* destructor of union find */
+    ~UnionFind();
 
+    /* no copy constructor */
+    UnionFind(const UnionFind& other) = delete;
 
-    class GroupOfNodes {
-    public:
-        int m_num_of_members; //number of elements
-        int m_height;
-        int m_column; //who is at the bottom
-        Node* m_root;
+    /* no assignment operator */
+    UnionFind& operator=(const UnionFind& other) = delete;
 
-        friend class Union_Find;
-    public:
-        /*---------- the big three--------*/
-        GroupOfNodes();
-        GroupOfNodes(const GroupOfNodes& other) = delete;
-        GroupOfNodes& operator=(const GroupOfNodes& group2) = delete;
+    /**
+     * newStock - re initialize the union find to suit with the new stock. all the previous data is deleted
+     * 
+     * @param records_stocks - array contains the stocks of each record
+     * @param number_of_records - the number of records of the stock
+     * 
+     * @exception std::bac_alloc exception might be thrown in case allocation failed
+    */
+    void newStock(int* records_stocks,int number_of_records);
 
-        /*------------getters and setters---------*/
-        int get_num_of_members() const;
-        void set_num_of_members(int num_elements);
-        int get_height() const;
-        void set_height( int height);
-        int get_column() const;
-        void set_column(int column);
-        Node* get_root() const;
+    /**
+     * putOn - puts groupUp on top of groupUnder (unions the groups)
+     * 
+     * @param groupUp - the group to put above the groupUnder
+     * @param groupUnder - the group to put under the groupUp
+     * @return
+     * returns the unioned group after putting groupUp on top of groupUnder
+    */
+    Group* putOn(Group* groupUp,Group* groupUnder);
 
-        //Please notice there may be bugs because of the two direction list
-        void set_root(Node* root);
-    };
+    /**
+     * find - finds the group of the given element
+     * 
+     * @param recordID - the recordID of which we want to find his group
+     * @return
+     * returns the group the given element is inside
+    */
+    Group* find(int recordID) const;
 
+    /**
+     * getHeight - gets the height of the record
+     * 
+     * @param recordID - the recordID of which we want the height
+     * @return
+     * returns the height of the record
+    */
+    int getHeight(int recordID) const;
 
-    class Node
-    {
-    public:
-        Record* m_record;
-        GroupOfNodes* m_group;
-        Node* m_father;
-        int global_height;
+    /**
+     * getRecord - gets the record with the recordID given as argument
+     * 
+     * @param recordID - the recordID of the record we want to get
+     * @return
+     * returns pointer to the record with the given recordID
+    */
+    Record* getRecord(int recordID) const;
 
-        friend class Union_Find;
+    /**
+     * getSize - gets the size of the union find
+     * 
+     * @return
+     * returns the number of elements in the union find
+    */
+    int getSize() const;
 
-    public:
-        /*-----------------the big three-----------*/
-        Node();
-        void resetNode();
-        ~Node();
-        Node(const Node& other) = delete;
-        Node& operator=(const Node& node2) = delete;
+private:
 
-        /*----------------getters and setters---------------*/
-        Record* get_record() const;
-        void set_record(Record* r);
-        GroupOfNodes* get_group() const;
-        void set_group(GroupOfNodes* g);
-        /*Node* get_son() const;
-        void set_son(Node* );*/
-        void set_father(Node*);
-        Node* get_father() const;
-        static Node* find_root(Node *node);
-        int get_global_height() const;
-        void set_global_height(int global_height);
-    };
+    Element* m_elements;
+    Group* m_groups;
+    int m_size;
+
+    /* Initial size of the union find */
+    static const int INITIAL_SIZE = 0;
+
 };
+
+
+class UnionFind::Group {
+
+public:
+
+    /**
+     * Group - constructor for the class
+    */
+    Group(): m_root(nullptr), m_height(INITIAL_HEIGHT),
+        m_column(INITIAL_COLUMN),m_elementsNum(INITIAL_ELEMENTS_NUM) {}
+
+
+    /* no copy constructor */
+    Group(const Group& other) = delete;
+
+    /* no assignemnt operator */
+    Group& operator=(const Group& other) = delete;
+
+
+    /**
+     * getRoot - gets the root of the group
+     * 
+     * @return
+     * returns the root of the group
+    */
+    Element* getRoot() const{
+        return m_root;
+    }
+
+    /**
+     * getHeight - gets the height of the group
+     * 
+     * @return returns the height of the group
+    */
+    int getHeight() const{
+        return m_height;
+    }
+
+    /**
+     * getColumn - gets the column of the group
+     * 
+     * @return
+     * returns the column of the group
+    */
+    int getColumn() const{
+        return m_column;
+    }
+    
+
+    /**
+     * getElementsNum - gets the number of elements in the group
+     * 
+     * @return
+     * returns the number of elements in the group
+    */
+    int getElementsNum() const{
+        return m_elementsNum;
+    }
+
+    /**
+     * setRoot - sets the element root of the group
+     * 
+     * @param root - the root of the group
+    */
+    void setRoot(Element* root){
+        m_root = root;
+    }
+
+    /**
+     * setHeight - sets height of the group
+     * 
+     * @param height - the height of the group
+    */
+    void setHeight(int height){
+        m_height = height;
+    }
+
+    void setColumn(int column){
+        m_column = column;
+    }
+
+    /**
+     * setElemensNum - sets the number of elements in the group
+     * 
+     * @param elementsNum - the number of elements in the group
+    */
+    void setElementsNum(int elementsNum){
+        m_elementsNum = elementsNum;
+    }
+
+private:
+    Element* m_root;
+    int m_height;
+    int m_column;
+    int m_elementsNum;
+    
+    friend class UnionFind;
+
+    /* initial height of empty group */
+    static const int INITIAL_HEIGHT = 0;
+
+    /* initial column of empty group */
+    static const int INITIAL_COLUMN = -1;
+
+    /* initial elements number of empty group */
+    static const int INITIAL_ELEMENTS_NUM = 0;
+
+    /* size of group with 1 element */
+    static const int UNIT_SIZE = 1;
+};
+
+
+
+class UnionFind::Element {
+
+public:
+    /**
+     * Element - constructor for the class
+    */
+    Element(): m_record(nullptr),m_group(nullptr),
+        m_next(nullptr),m_relativeHeight(INITIAL_RELATIVE_HEIGHT) {}
+        
+    /**
+     *  ~Elemennt - destructor for the class
+     */
+    ~Element() {
+        delete m_record;
+    }
+
+    /* no copy constructor */
+    Element(const Element& other);
+
+    /* no assignment operator */
+    Element& operator=(const Element& other) = delete;
+
+    /**
+     * getRecord - gets the element of the class
+     * 
+     * @return
+     * returns the record
+    */
+    Record* getRecord() const{
+        return m_record;
+    }
+
+    /**
+     * getGroup - gets the group the element is inside
+     * 
+     * @return
+     * returns the group of which the element is in
+    */
+    Group* getGroup() const{
+        return m_group;
+    }
+
+    /**
+     * getNext - gets the next element in the road to root
+     * 
+     * @return
+     * returns the next element
+    */
+    Element* getNext() const{
+        return m_next;
+    }
+
+    /**
+     * getRelativeHeight - gets the relative height of the element
+     * 
+     * @return
+     * returns the relative height of the element
+    */
+    int getRelativeHeight() const{
+        return m_relativeHeight;
+    }
+
+    /**
+     * setRecord - sets the record of the element
+     * 
+     * @param record - the record of the element
+    */
+    void setRecord(Record* record){
+        m_record = record;
+    }
+
+    /**
+     * setGroup - sets the new group of the element
+     * 
+     * @param group - the new group
+     * 
+    */
+    void setGroup(Group* group){
+        m_group = group;
+    }
+
+    /**
+     * setNextElement - sets the next element
+     * 
+     * @param next - the next element
+    */
+    void setNextElement(Element* next){
+        m_next = next;
+    }
+
+    /**
+     * setRelativeHeight - sets the new relative height
+     * 
+     * @param relativeHeigh - the new relative height
+    */
+    void setRelativeHeight(int relativeHeight){
+        m_relativeHeight = relativeHeight;
+    }
+
+private:
+
+    Record* m_record;
+    Group* m_group;
+    Element* m_next;
+    int m_relativeHeight;
+
+    friend class UnionFind;
+
+    /* Initial relative height */
+    static const int INITIAL_RELATIVE_HEIGHT = 0;
+};
+
+
+
 
 #endif //UNION_FIND_H
