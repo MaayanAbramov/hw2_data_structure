@@ -315,6 +315,13 @@ private:
                         tempA->m_ptr_left->m_prize);
             }
         }
+        if (tempA->m_ptr_right != nullptr) {
+            int not_updated_prize_for_Ar = acumulated_sum(tempA->m_ptr_right);
+            if (not_updated_prize_for_Ar != tempA->m_ptr_right->m_prize2)  {
+                tempA->m_ptr_right->m_prize = tempA->m_ptr_right->m_prize2 - (not_updated_prize_for_Ar -
+                                                                            tempA->m_ptr_right->m_prize);
+            }
+        }
         if (parent->m_ptr_left != nullptr) {
             int not_updated_prize_for_parentL = acumulated_sum(parent->m_ptr_left);
             if (not_updated_prize_for_parentL != parent->m_ptr_left->m_prize2) {
@@ -388,6 +395,13 @@ private:
             if(not_updated_prize_for_Ar != tempA->m_ptr_right->m_prize2) {
                 tempA->m_ptr_right->m_prize = tempA->m_ptr_right->m_prize2 - (not_updated_prize_for_Ar -
                         tempA->m_ptr_right->m_prize);
+            }
+        }
+        if (tempA->m_ptr_left != nullptr) {
+            int not_updated_prize_for_Al = acumulated_sum(tempA->m_ptr_left);
+            if(not_updated_prize_for_Al != tempA->m_ptr_left->m_prize2) {
+                tempA->m_ptr_left->m_prize = tempA->m_ptr_left->m_prize2 - (not_updated_prize_for_Al -
+                                                                              tempA->m_ptr_left->m_prize);
             }
         }
         if (parent->m_ptr_left != nullptr) {
@@ -597,21 +611,14 @@ private:
                                                                                   parent->m_ptr_left->m_prize);
                 }
             }
-            if (parent->m_ptr_left != nullptr) {
-                int not_updated_prize_for_Cl = acumulated_sum(parent->m_ptr_left);
-                if (not_updated_prize_for_Cl != parent->m_ptr_left->m_prize2) {
-                    parent->m_ptr_left->m_prize = parent->m_ptr_left->m_prize2 - (not_updated_prize_for_Cl -
-                                                                                  parent->m_ptr_left->m_prize);
-                }
-            }
-
             if (parent->m_ptr_right != nullptr) {
                 int not_updated_prize_for_Bl = acumulated_sum(parent->m_ptr_right);
                 if (not_updated_prize_for_Bl != parent->m_ptr_right->m_prize2) {
-                    parent->m_ptr_right->m_prize = parent->m_ptr_right->m_prize2 - (not_updated_prize_for_Bl-
-                                                                                    parent->m_ptr_right->m_prize);
+                    parent->m_ptr_right->m_prize = parent->m_ptr_right->m_prize2 - (not_updated_prize_for_Bl -
+                                                                                  parent->m_ptr_right->m_prize);
                 }
             }
+
 
             if (tempA->m_ptr_left != nullptr) {
                 int not_updated_prize_for_Br = acumulated_sum(tempA->m_ptr_left);
