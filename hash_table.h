@@ -82,7 +82,7 @@ public:
     T * find(int key);
 
 
-    void assignObjectsToArray(typename AvlTree<object>::Node* node, object* arr);
+    void assignObjectsToArray(typename AvlTree<object>::Node* node, object* arr, int* index);
     void changeSizeIfNeeded();
 
 
@@ -193,14 +193,30 @@ T * hash_table<T>::find(int key)  {
 }
 
 template <class T>
-void hash_table<T>::assignObjectsToArray(typename AvlTree<object>::Node* node, object* arr) {
+void hash_table<T>::assignObjectsToArray(typename AvlTree<object>::Node* node, object* arr, int* index) {
     if (node == nullptr) {
         return;
     }
-    assignObjectsToArray(node->m_ptr_left, arr);
-    *arr++ = node->m_data;
-    assignObjectsToArray(node->m_ptr_right, arr);
+    assignObjectsToArray(node->m_ptr_left, arr, index);
+    arr[*index] = node->m_data;
+    (*index)++;
+    assignObjectsToArray(node->m_ptr_right, arr, index);
 }
+/*
+void streaming_database::reverse_inorder_fill_array(AvlTree<Movie>::Node* m_root, int* array, int* index)
+{
+    if(m_root == nullptr)
+    {
+        return;
+    }
+
+    reverse_inorder_fill_array(m_root->m_ptr_right,array,index);
+    array[*index] =  m_root->m_data.get_movieId(); //after that we need to convert it to output<int>
+    //cout << "The value of array of index " << *index << " is " << array[*index] << endl;
+    (*index)++;
+    reverse_inorder_fill_array(m_root->m_ptr_left,array,index);
+}*/
+
 
 template <class T>
 void hash_table<T>::changeSizeIfNeeded() {
@@ -213,28 +229,32 @@ void hash_table<T>::changeSizeIfNeeded() {
         auto updatedArray = new AvlTree<object>[m_size];
         for (int i = 0 ; i < backupToSize ; i++) {
             AvlTree<object>* tree_ob = &m_array[i];
+            if (tree_ob->ptr_main_root != nullptr)  {
 
-            int elems_in_tree_ob = tree_ob->m_num_elements;
-            auto arr = new object[elems_in_tree_ob];
-            assignObjectsToArray(tree_ob->ptr_main_root, arr);
+                int elems_in_tree_ob = tree_ob->m_num_elements;
+                auto arr = new object[elems_in_tree_ob];
+                int index = 0;
+                assignObjectsToArray(tree_ob->ptr_main_root, arr, &index);
 
-            /*//test
-            for (int k = 0 ; k < elems_in_tree_ob ; k++) {
-                object* current_obj = &arr[k];
-                assert(current_obj->m_key != -1); //checks if the array didn't initialize well
+                //test
+                for (int k = 0 ; k < elems_in_tree_ob ; k++) {
+                    object* current_obj = &arr[k];
+                    assert(current_obj->m_key != -1); //checks if the array didn't initialize well
 
-            }*/
-            for (int j = 0 ; j < elems_in_tree_ob ; j++) {
+                }
+                for (int j = 0 ; j < elems_in_tree_ob ; j++) {
 
-                object* current_obj = &arr[j];
-                int current_key = (current_obj->get_key());
-                AvlTree<object>* current_tree = &updatedArray[hash(current_key)];
-                current_tree->ptr_main_root = current_tree->insert(current_tree->ptr_main_root, *current_obj);
+                    object* current_obj = &arr[j];
+                    int current_key = (current_obj->get_key());
+                    AvlTree<object>* current_tree = &updatedArray[hash(current_key)];
+                    current_tree->ptr_main_root = current_tree->insert(current_tree->ptr_main_root, *current_obj);
 
 
 
+                }
+                delete[] arr;
             }
-            delete[] arr;
+
 
         }
 
