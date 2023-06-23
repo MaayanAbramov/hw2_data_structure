@@ -1,6 +1,6 @@
 
 #include <cstdio>
-#include <exception>
+#include <stdexcept>
 #include "cassert"
 #include "Record.h"
 
@@ -104,19 +104,10 @@ public:
         static Node* find_root(Node *node);
         int get_global_height() const;
         void set_global_height(int global_height);
-
-
-
-
     };
 
 
     GroupOfNodes *find(int recordID) const;
 };
-
-
-
-
-
 
 #endif //UNION_FIND_H
