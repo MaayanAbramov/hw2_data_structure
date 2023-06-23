@@ -30,7 +30,7 @@ public:
     /*--------------getters and setters-------*/
     Record* get_record_from_array(int r_id) const;
     int get_size() const;
-    int recursive_height_sum(Node* ) const;
+    int recursive_height_sum(Node* , Node*) const;
     int get_height(int r_id) const;
     /*----------------process functions------*/
     void newMonth(int* records_stock, int num_of_records);

@@ -23,53 +23,66 @@ Record* Union_Find::get_record_from_array(int r_id) const {
 int Union_Find::get_size() const {
     return m_size;
 }
-int Union_Find::recursive_height_sum(Node* curr_node) const {
-    if (curr_node == nullptr) {
-        return 0;
+int Union_Find::recursive_height_sum(Node* curr_node, Node* root) const {
+    if (curr_node == root) {
+        return root->global_height;
     }
-    int recursive_out = recursive_height_sum(curr_node->get_father());
-    int my_height = curr_node->get_global_height();
-    int sum = recursive_out + my_height;
-    return   sum;
+    return   curr_node->global_height + recursive_height_sum(curr_node->m_father, root);
 }
 
 int Union_Find::get_height(int r_id) const {
     int height = 0;
     Node* element = &m_elements[r_id];
+    Node* root = Node::find_root(element);
 
-    return recursive_height_sum(element);
+    return recursive_height_sum(element, root);
 
 
 }
 void Union_Find::shrink_the_tree_path(Union_Find::Node* curr_node, Union_Find::Node* root,int* acumulated_sum_height,
                                       int* balance_factor) {
-    if (curr_node == nullptr) {
+    if (curr_node== root) {
         return;
     }
     int old = curr_node->global_height;
     curr_node->global_height = *acumulated_sum_height - *balance_factor;
     *balance_factor += old;
-    Node* father = curr_node->m_father;
+    Node* next = curr_node->m_father;
     curr_node->m_father = root;
-    shrink_the_tree_path(father, root, acumulated_sum_height, balance_factor);
+    shrink_the_tree_path(next, root, acumulated_sum_height, balance_factor);
+    /*if (curr_node->m_father == root->m_father) {
+        int old = curr_node->global_height;
+        curr_node->global_height = *acumulated_sum_height - *balance_factor;
+        *balance_factor += old;
+        Node* father = curr_node->m_father;
+        curr_node->m_father = root;
+    }*/
 
 }
-/*
+
 Union_Find::GroupOfNodes * Union_Find::find_group(int r_id) {
 
     Node* ptr_to_record_node = &m_elements[r_id];
-    int acumulated_sum = recursive_height_sum(ptr_to_record_node);
+    Node* root = Node::find_root(ptr_to_record_node);
+    int acumulated_sum = recursive_height_sum(ptr_to_record_node, root); //sure right
+    acumulated_sum-= root->global_height;
 
 
     //like the boxes question from the turtorial
-    Node* root = Node::find_root(ptr_to_record_node);
-    GroupOfNodes* group_of_node = root->m_group;
+
+
+
     int balance_factor = 0;
-    shrink_the_tree_path(ptr_to_record_node, root, &acumulated_sum, &balance_factor);
+    if (ptr_to_record_node->m_father != nullptr) {
+        shrink_the_tree_path(ptr_to_record_node, root, &acumulated_sum, &balance_factor);
+    }
 
+
+
+    GroupOfNodes* group_of_node = root->m_group;
     return group_of_node;
-}*/
-
+}
+/*
 Union_Find::GroupOfNodes* Union_Find::find_group(int recordID) {
     Node* currElement = &m_elements[recordID];
     int relativeSum = 0;
@@ -93,7 +106,7 @@ Union_Find::GroupOfNodes* Union_Find::find_group(int recordID) {
     }
     return group;
 
-}
+}*/
 
 //group_1_up contains more elements
 
@@ -249,7 +262,7 @@ Union_Find::Node* Union_Find::Node::get_father() const {
 Union_Find::Node* Union_Find::Node::find_root(Node *node) {
     assert(node != nullptr);
     Node* temp = node;
-    while (temp->m_father)
+    while (temp->m_father != nullptr)
     {
         temp = temp->m_father;
     }
