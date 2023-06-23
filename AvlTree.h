@@ -39,7 +39,7 @@ public:
 public:
     Node* ptr_main_root;
     int m_num_elements;
-    AvlTree() : ptr_main_root(nullptr) {}
+    AvlTree() : ptr_main_root(nullptr), m_num_elements(0) {}
 
     void deleteNodesOfTree(Node* curr_node) { // the argument is only for the recursive call15
         //cout << "deleteNodesOfTree | got in" << endl;
