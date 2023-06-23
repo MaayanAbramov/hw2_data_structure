@@ -268,7 +268,20 @@ private:
         parent->m_prize2 = acumulated_sum(parent);
         tempA->m_prize2 = acumulated_sum(tempA);
 
+
         if (tempA != nullptr) {
+            if (tempA->m_ptr_right != nullptr) {
+                tempA->m_ptr_right->m_prize2 = acumulated_sum(tempA->m_ptr_right);
+            }
+            if (tempA->m_ptr_left != nullptr) {
+                tempA->m_ptr_left->m_prize2 = acumulated_sum(tempA->m_ptr_left);
+            }
+            if (parent->m_ptr_left != nullptr) {
+                parent->m_ptr_left->m_prize2 = acumulated_sum(parent->m_ptr_left);
+            }
+            if (parent->m_ptr_right != nullptr) {
+                parent->m_ptr_right->m_prize2 = acumulated_sum(parent->m_ptr_right);
+            }
             parent->m_ptr_left = tempA->m_ptr_right;
             tempA->m_ptr_right = parent;
             //cout << "did an action" << endl;
@@ -295,6 +308,29 @@ private:
         if (not_updated_prize_for_B != parent->m_prize2)  {
             parent->m_prize = parent->m_prize2 - (not_updated_prize_for_B - parent->m_prize);
         }
+        if (tempA->m_ptr_left != nullptr) {
+            int not_updated_prize_for_Al = acumulated_sum(tempA->m_ptr_left);
+            if (not_updated_prize_for_Al != tempA->m_ptr_left->m_prize2)  {
+                tempA->m_ptr_left->m_prize = tempA->m_ptr_left->m_prize2 - (not_updated_prize_for_Al -
+                        tempA->m_ptr_left->m_prize);
+            }
+        }
+        if (parent->m_ptr_left != nullptr) {
+            int not_updated_prize_for_parentL = acumulated_sum(parent->m_ptr_left);
+            if (not_updated_prize_for_parentL != parent->m_ptr_left->m_prize2) {
+                parent->m_ptr_left->m_prize = parent->m_ptr_left->m_prize2 - (not_updated_prize_for_parentL -
+                        parent->m_ptr_left->m_prize);
+            }
+        }
+        if (parent->m_ptr_right != nullptr) {
+            int not_updated_prize_for_parentR = acumulated_sum(parent->m_ptr_right);
+            if (not_updated_prize_for_parentR != parent->m_ptr_right->m_prize2) {
+                parent->m_ptr_right->m_prize = parent->m_ptr_right->m_prize2 - (not_updated_prize_for_parentR -
+                                                                              parent->m_ptr_right->m_prize);
+            }
+        }
+
+
 
         //cout << "#temp A = " <<tempA->m_data << endl;
         return tempA;
@@ -310,6 +346,19 @@ private:
         tempA->m_prize2 = acumulated_sum(tempA);
 
         if (tempA != nullptr) {
+            if (tempA->m_ptr_right != nullptr) {
+                tempA->m_ptr_right->m_prize2 = acumulated_sum(tempA->m_ptr_right);
+            }
+            if (tempA->m_ptr_left != nullptr) {
+                tempA->m_ptr_left->m_prize2 = acumulated_sum(tempA->m_ptr_left);
+            }
+            if (parent->m_ptr_right != nullptr) {
+                parent->m_ptr_right->m_prize2 = acumulated_sum(parent->m_ptr_right);
+            }
+            if (parent->m_ptr_left != nullptr) {
+                parent->m_ptr_left->m_prize2 = acumulated_sum(parent->m_ptr_left);
+            }
+
             parent->m_ptr_right = tempA->m_ptr_left;
             tempA->m_ptr_left = parent;
 
@@ -334,6 +383,23 @@ private:
         if (not_updated_prize_for_B != parent->m_prize2)  {
             parent->m_prize = parent->m_prize2 - (not_updated_prize_for_B - parent->m_prize);
         }
+        if (tempA->m_ptr_right != nullptr) {
+            int not_updated_prize_for_Ar = acumulated_sum(tempA->m_ptr_right);
+            if(not_updated_prize_for_Ar != tempA->m_ptr_right->m_prize2) {
+                tempA->m_ptr_right->m_prize = tempA->m_ptr_right->m_prize2 - (not_updated_prize_for_Ar -
+                        tempA->m_ptr_right->m_prize);
+            }
+        }
+        if (parent->m_ptr_left != nullptr) {
+            int not_updated_prize_for_Bl = acumulated_sum(parent->m_ptr_left);
+            if (not_updated_prize_for_Bl != parent->m_ptr_left->m_prize2) {
+                parent->m_ptr_left->m_prize = parent->m_ptr_left->m_prize2 - (not_updated_prize_for_Bl -
+                        parent->m_ptr_left->m_prize);
+            }
+        }
+
+
+
 
 
         return tempA;

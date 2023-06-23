@@ -184,6 +184,7 @@ StatusType RecordsCompany::addPrize(int c_id1, int c_id2, double  amount) {
         m_vip_costumers.add_amount(m_vip_costumers.ptr_main_root, false, lower_bound->m_data->get_id(), -amount);
     }
 
+
     return StatusType::SUCCESS;
 }
 
