@@ -18,3 +18,4 @@ getPlace: column=37, hight=1
 getPlace: column=37, hight=0
 
 Process finished with exit code 0
+
