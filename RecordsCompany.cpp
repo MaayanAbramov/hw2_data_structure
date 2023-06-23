@@ -25,10 +25,14 @@ StatusType RecordsCompany::newMonth(int *records_stocks, int number_of_records) 
             while (m_vip_costumers.find_next_inorder(m_vip_costumers.ptr_main_root, curr_node) != nullptr) {
                 auto next_node = m_vip_costumers.find_next_inorder(m_vip_costumers.ptr_main_root, curr_node);
                 curr_node->m_data->set_expenses(0);
+                curr_node->m_prize = 0;
+                curr_node->m_prize2 = 0;
                 curr_node = next_node;
             }
             if (curr_node != nullptr) {
                 curr_node->m_data->set_expenses(0);
+                curr_node->m_prize = 0;
+                curr_node->m_prize2 = 0;
             }
         }
 
