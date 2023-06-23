@@ -141,12 +141,14 @@ bool hash_table<T>::object::operator==(const hash_table::object
 
 template <class T>
 bool hash_table<T>::object::operator<(const object& arr_obj2) const {
-    return this->m_key < arr_obj2.get_key();
+    int obj_key = arr_obj2.get_key();
+    return this->m_key < obj_key;
 }
 
 template <class T>
 bool hash_table<T>::object::operator>(const object& arr_obj2) const {
-    return this->m_key < arr_obj2.get_key();
+    int obj_key = arr_obj2.get_key();
+    return this->m_key > obj_key;
 }
 
 
