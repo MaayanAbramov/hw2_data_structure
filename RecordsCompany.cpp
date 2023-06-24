@@ -4,14 +4,6 @@
 
 #include "RecordsCompany.h"
 
-/*
-RecordsCompany::RecordsCompany() {
-    //m_vip_costumers = RankTree<Customer*>();
-    //m_all_costumers = hash_table<Customer>();
-    //m_records_stock = Union_Find();
-}*/
-
-
 StatusType RecordsCompany::newMonth(int *records_stocks, int number_of_records) {
     try {
         if (number_of_records < 0) {
@@ -172,17 +164,18 @@ StatusType RecordsCompany::addPrize(int c_id1, int c_id2, double  amount) {
     if (c_id1 > c_id2) {
         return StatusType::INVALID_INPUT;
     }
+
     RankTree<Customer *>::Node * temp = nullptr;
-    auto upper_bound = m_vip_costumers.find_closest_max(m_vip_costumers.ptr_main_root, c_id2,temp);
+    auto upper_bound = m_vip_costumers.find_closest_max(m_vip_costumers.ptr_main_root, c_id2-1,temp);
     temp = nullptr;
     auto lower_bound = m_vip_costumers.find_closest_max(m_vip_costumers.ptr_main_root, c_id1-1, temp);
 
-    //auto lower_bound = m_vip_costumers.find_closest_min(m_vip_costumers.ptr_main_root, c_id1, 2147483647); // was
-    // c_id1 - 1
+
     if (upper_bound == nullptr && lower_bound == nullptr) {
         return StatusType::SUCCESS;
     }
-     //update here
+
+    // updates here
     m_vip_costumers.add_amount(m_vip_costumers.ptr_main_root, false, upper_bound->m_data->get_id(), amount);
 
     if (lower_bound != nullptr) {
@@ -212,8 +205,6 @@ Output_t<double> RecordsCompany::getExpenses(int c_id) {
         double expenses = curr_customer->get_expenses();
         return expenses-prize;
     }
-
-
 
 }
 
