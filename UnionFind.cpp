@@ -51,12 +51,11 @@ void Union_Find::shrink_the_tree_path(Union_Find::Node* curr_node, Union_Find::N
 
 }
 
-Union_Find::GroupOfNodes * Union_Find::find_group(int r_id) {
+Union_Find::GroupOfNodes* Union_Find::find_group(int r_id) {
     Node* ptr_to_record_node = &m_elements[r_id];
     Node* root = Node::find_root(ptr_to_record_node);
     int acumulated_sum = recursive_height_sum(ptr_to_record_node, root);
     acumulated_sum-= root->global_height;
-
 
     //like the boxes question from the turtorial
     int balance_factor = 0;
@@ -69,37 +68,43 @@ Union_Find::GroupOfNodes * Union_Find::find_group(int r_id) {
 }
 
 
-//group_1_up contains more elements
-Union_Find::GroupOfNodes* Union_Find::Union(GroupOfNodes* groupUp,GroupOfNodes* groupUnder){
-    if(groupUp->m_num_of_members > groupUnder->m_num_of_members){
-        Node* groupUpRoot = groupUp->m_root;
-        Node* groupUnderRoot = groupUnder->m_root;
-        groupUpRoot->global_height = groupUpRoot->global_height + groupUnder->m_height;
-        groupUnderRoot->global_height= groupUnderRoot->global_height - groupUpRoot->global_height;
+Union_Find::GroupOfNodes* Union_Find::Union(GroupOfNodes* group1, GroupOfNodes* group2) {
+    //group_2 contains more elements
+    if (group1->m_num_of_members < group2->m_num_of_members) {
+        Node* group1_m_ptr_root = group1->m_root;
+        Node* group2_m_ptr_root = group2->m_root;
 
-        groupUp->m_height = groupUp->m_height + groupUnder->m_height;
-        groupUp->m_column = groupUnder->m_column;
-        groupUp->m_num_of_members = groupUp->m_num_of_members + groupUnder->m_num_of_members;
+        int temp1 = group2->m_height - group2_m_ptr_root->global_height;
+        group1_m_ptr_root->global_height = group1_m_ptr_root->global_height + temp1;
 
-        groupUnderRoot->m_group = nullptr;//
-        groupUnder->m_root = nullptr;//
-        groupUnderRoot->m_father = groupUpRoot;
-        return groupUp;
-    }
-    else{
-        Node* groupUpRoot = groupUp->m_root;
-        Node* groupUnderRoot = groupUnder->m_root;
-        groupUpRoot->global_height = groupUpRoot->global_height + groupUnder->m_height -groupUnderRoot->global_height;
+        group2->m_height = group1->m_height + group2->m_height;
+        group2->m_num_of_members = group1->m_num_of_members + group2->m_num_of_members;
 
-        groupUnder->m_height = groupUp->m_height + groupUnder->m_height;
-        groupUnder->m_num_of_members = groupUp->m_num_of_members + groupUnder->m_num_of_members;
+        group1_m_ptr_root->m_father = group2_m_ptr_root;
+        group1_m_ptr_root->m_group = nullptr;
+        group1->m_root = nullptr;
 
-        groupUpRoot->m_group = nullptr;
-        groupUp->m_root = nullptr;
-        groupUpRoot->m_father = groupUnderRoot;
-        return groupUnder;
+        return group2;
     }
 
+    //group_1 contains more elements
+    else {
+        Node* group1_m_ptr_root = group1->m_root;
+        Node* group2_m_ptr_root = group2->m_root;
+
+        group1_m_ptr_root->global_height = group1_m_ptr_root->global_height + group2->m_height;
+        group2_m_ptr_root->global_height = group2_m_ptr_root->global_height - group1_m_ptr_root->global_height;
+
+        group1->m_column = group2->m_column;
+        group1->m_height = group1->m_height + group2->m_height;
+        group1->m_num_of_members = group1->m_num_of_members + group2->m_num_of_members;
+
+        group2_m_ptr_root->m_father = group1_m_ptr_root;
+        group2_m_ptr_root->m_group = nullptr;
+        group2->m_root = nullptr;
+
+        return group1;
+    }
 }
 
 void Union_Find::newMonth(int* records_stock, int num_of_records)  {
@@ -256,5 +261,3 @@ Union_Find::Node* Union_Find::GroupOfNodes::get_root() const {
 void Union_Find::GroupOfNodes::set_root(Node* root) {
     m_root = root;
 }
-
-
