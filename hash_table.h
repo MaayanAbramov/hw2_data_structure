@@ -10,12 +10,6 @@ using namespace std;
 #include "AvlTree.h"
 #include <cassert>
 
-/*template <class T>
-class Getter{
-public:
-    int operator()(const T&) = 0;
-};*/
-
 template <class T>
 class hash_table{
 public:
@@ -37,17 +31,8 @@ public:
         object(const object &other) = default;
 
         //----------------the big three---------------
-
-
         T *get_object() const;
-
-        //void  set_object(const T *object);
-
-        //there is no reason to create a setter function for this boolean field
-        //the reason is that the function that responsible for the size multiplication will indicate this for us.
-
         int get_key() const;
-        //no reason to create a setter function for this field
 
 
         //--------------------------operators------------
@@ -61,9 +46,6 @@ public:
 
 private:
     static const int default_Length = 16;
-    // this is the size of the array
-
-    //AvlTree<object> m_array[default_Length]; //every field in the array will be tree
 
 
 public:
@@ -88,8 +70,6 @@ public:
 
     bool insert_to_array(T* toAdd, int key);
     bool remove_from_array(const T& objectToRemove, int key);
-
-    //friend std::ostream& operator<<(std::ostream &os, const hash_table<T>& hash);
 };
 
 
@@ -102,16 +82,6 @@ template <class T>
 T * hash_table<T>::object::get_object() const{
     return m_object;
 }
-/*
-template <class T>
-void hash_table<T>::object::set_object(const T *object) {
-    m_object = object;
-}*/
-
-/*template <class T>
-bool hash_table<T>::object::get_is_insertion_available() const {
-    return m_is_insertion_available;
-}*/
 
 template <class T>
 int hash_table<T>::object::get_key() const {
@@ -125,7 +95,6 @@ typename hash_table<T>::object& hash_table<T>::object::operator=(const hash_tabl
     }
     m_object = array_object2.m_object;
     m_key = array_object2.get_key();
-    //m_is_insertion_available = array_object2.get_is_insertion_available();
 
     return *this;
 }
@@ -135,7 +104,6 @@ template<class T>
 bool hash_table<T>::object::operator==(const hash_table::object
                                        &array_object2) {
     bool OK1 = array_object2.m_key == this->m_key;
-    //bool OK2 = array_object2.m_object == this->m_object;
     return OK1;
 }
 
@@ -156,10 +124,6 @@ bool hash_table<T>::object::operator>(const object& arr_obj2) const {
 template <class T>
 hash_table<T>::hash_table(): m_size(default_Length), m_count_elements(0){
     this->m_array = new AvlTree<object>[m_size];
-    /*for (int i = 0; i < m_size; i++) {
-        m_array[i] = AvlTree<object>(); // Initialize each tree in the array
-    }*/
-
 }
 
 
@@ -202,21 +166,6 @@ void hash_table<T>::assignObjectsToArray(typename AvlTree<object>::Node* node, o
     (*index)++;
     assignObjectsToArray(node->m_ptr_right, arr, index);
 }
-/*
-void streaming_database::reverse_inorder_fill_array(AvlTree<Movie>::Node* m_root, int* array, int* index)
-{
-    if(m_root == nullptr)
-    {
-        return;
-    }
-
-    reverse_inorder_fill_array(m_root->m_ptr_right,array,index);
-    array[*index] =  m_root->m_data.get_movieId(); //after that we need to convert it to output<int>
-    //cout << "The value of array of index " << *index << " is " << array[*index] << endl;
-    (*index)++;
-    reverse_inorder_fill_array(m_root->m_ptr_left,array,index);
-}*/
-
 
 template <class T>
 void hash_table<T>::changeSizeIfNeeded() {
@@ -236,61 +185,21 @@ void hash_table<T>::changeSizeIfNeeded() {
                 int index = 0;
                 assignObjectsToArray(tree_ob->ptr_main_root, arr, &index);
 
-                //test
-                /*for (int k = 0 ; k < elems_in_tree_ob ; k++) {
-                    object* current_obj = &arr[k];
-                    assert(current_obj->m_key != -1); //checks if the array didn't initialize well
-
-                }*/
                 for (int j = 0 ; j < elems_in_tree_ob ; j++) {
 
                     object* current_obj = &arr[j];
                     int current_key = (current_obj->get_key());
                     AvlTree<object>* current_tree = &updatedArray[hash(current_key)];
                     current_tree->ptr_main_root = current_tree->insert(current_tree->ptr_main_root, *current_obj);
-
-
-
                 }
                 delete[] arr;
             }
-
-
         }
-
 
         delete[] m_array;
         m_array = updatedArray;
     }
-
-/*---------------------no need for resize to half------------------------*/
-/*
-    else if(m_count_elements <= 0.25*m_size) {
-        int backUpToSize = m_size;
-        m_size = m_size/2;
-        auto updatedArray = new AvlTree<object>[m_size];
-        for (int i = 0 ; i < backUpToSize ; i++) {
-            auto tree_ob = &m_array[i];
-            auto arr = new object[backUpToSize];
-            assignObjectsToArray(tree_ob->ptr_main_root, arr);
-            for (int j = 0; j < sizeof(arr) / sizeof(object); j++) {
-                object *current_obj = &arr[j];
-                int current_key = (current_obj->get_key());
-                AvlTree<object> *current_tree = &updatedArray[hash(current_key)];
-                current_tree->ptr_main_root = current_tree->insert(current_tree->ptr_main_root, *current_obj);
-
-            }
-            delete[] arr;
-        }
-        delete[] m_array;
-        m_array = updatedArray;
-    }
-    return;
-    */
 }
-
-
-
 
 
 template <class T>
@@ -310,7 +219,7 @@ bool hash_table<T>::insert_to_array(T* objectToAdd, int key) {
 
 template <class T>
 bool hash_table<T>::remove_from_array(const T& objectToRemove, int key) {
-    if (find(key) == nullptr) { //means the key already does not exists in the tree
+    if (find(key) == nullptr) { //means the key already does not exist in the tree
         return false;
     }
     object toRemove(&objectToRemove, key);
@@ -322,17 +231,5 @@ bool hash_table<T>::remove_from_array(const T& objectToRemove, int key) {
     return true;
 
 }
-
-
-/*
-template <class T>
-std::ostream& operator<<(std::ostream &os, const hash_table<T>& hash)
-{
-    os << "size:" << hash.m_size << "current size: "<< hash.currentSize << std::endl;
-    for(int i = 0; i < hash.m_size; i++)
-        os << "arr[" << i << "]: " << hash.m_array[i];
-    os << std::endl;
-    return os;
-}*/
 
 #endif //RECORDSCOMPANY_HASH_TABLE_H
