@@ -12,7 +12,6 @@ Union_Find::~Union_Find() {
     m_size = 0;
     m_elements = nullptr;
     m_groups = nullptr;
-
 }
 
 Record* Union_Find::get_record_from_array(int r_id) const {
