@@ -7,9 +7,6 @@
 #ifndef UNION_FIND_H
 #define UNION_FIND_H
 
-
-
-
 class Union_Find
 {
 public:
@@ -17,9 +14,8 @@ public:
     class GroupOfNodes;
 
     Node* m_elements; //array of Nodes
-    GroupOfNodes* m_groups;//array of groups
+    GroupOfNodes* m_groups; //array of groups
     int m_size = 0;
-    Node* find_root_of_heap_aux(int item);
 
 public:
     /*---------------the big three---------*/
@@ -27,11 +23,13 @@ public:
     ~Union_Find();
     Union_Find& operator=(const Union_Find& other) = delete;
     Union_Find(const Union_Find& other) = delete;
+
     /*--------------getters and setters-------*/
     Record* get_record_from_array(int r_id) const;
     int get_size() const;
     int recursive_height_sum(Node* , Node*) const;
     int get_height(int r_id) const;
+
     /*----------------process functions------*/
     void newMonth(int* records_stock, int num_of_records);
     Record* find_root_of_heap(int item);
@@ -41,11 +39,7 @@ public:
     void shrink_the_tree_path(Node* curr_node, Node* root,int* acumulated_sum_height, int* balance_factor);
 
 
-
-
-
 public:
-
     class GroupOfNodes {
     public:
         int m_num_of_members; //number of elements
@@ -105,9 +99,6 @@ public:
         int get_global_height() const;
         void set_global_height(int global_height);
     };
-
-
-    GroupOfNodes *find(int recordID) const;
 };
 
 #endif //UNION_FIND_H
