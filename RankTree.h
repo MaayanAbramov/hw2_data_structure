@@ -42,8 +42,7 @@ public:
     Getter<T> *m_getter;
     explicit RankTree(Getter<T> *getter) : ptr_main_root(nullptr), m_num_elements(0), m_getter(getter) {}
 
-    void deleteNodesOfTree(Node* curr_node) { // the argument is only for the recursive call15
-        //cout << "deleteNodesOfTree | got in" << endl;
+    void deleteNodesOfTree(Node* curr_node) { // the argument is only for the recursive call
         //if we got to the leaf's child (which does not exist)
         if (curr_node == nullptr) {
             return;
@@ -53,17 +52,12 @@ public:
         deleteNodesOfTree(curr_node->m_ptr_left);
         m_num_elements--;
         delete curr_node;
-        //cout << "deleteNodesOfTree | got out" << endl;
     }
 
 
     ~RankTree() {
-        //cout << " ~RankTree | got in --------------------------------------------------------------------------"<<
-        // endl;
-
         deleteNodesOfTree(ptr_main_root);
         delete m_getter;
-        //cout << " ~RankTree | got out "<< endl;
     }
 
 
@@ -169,12 +163,12 @@ private:
             return 0;
         }
 
-            //a pointer to a subtree with only two nodes -> (a root and a left leaf)
+        //a pointer to a subtree with only two nodes -> (a root and a left leaf)
         else if (node_ptr->m_ptr_right == nullptr) {
             return node_ptr->m_ptr_left->m_height - (-1);
         }
 
-            //a pointer to a subtree with only two nodes -> (a root and a right leaf)
+        //a pointer to a subtree with only two nodes -> (a root and a right leaf)
         else if (node_ptr->m_ptr_left == nullptr) {
             return -1-node_ptr->m_ptr_right->m_height;
         }
@@ -200,9 +194,6 @@ private:
             if (tempA->m_ptr_left != nullptr) {
                 tempA->m_ptr_left->m_prize2 = acumulated_sum(tempA->m_ptr_left);
             }
-            /*if (parent->m_ptr_left != nullptr) {
-                parent->m_ptr_left->m_prize2 = acumulated_sum(parent->m_ptr_left);
-            }*/
             if (parent->m_ptr_right != nullptr) {
                 parent->m_ptr_right->m_prize2 = acumulated_sum(parent->m_ptr_right);
             }
@@ -238,13 +229,7 @@ private:
                                                                             tempA->m_ptr_left->m_prize);
             }
         }
-        /*if (tempA->m_ptr_right != nullptr) {
-            double not_updated_prize_for_Ar = acumulated_sum(tempA->m_ptr_right);
-            if (not_updated_prize_for_Ar != tempA->m_ptr_right->m_prize2)  {
-                tempA->m_ptr_right->m_prize = tempA->m_ptr_right->m_prize2 - (not_updated_prize_for_Ar -
-                                                                              tempA->m_ptr_right->m_prize);
-            }
-        }*/
+
         //before the rotation it was Ar
         if (parent->m_ptr_left != nullptr) {
             double not_updated_prize_for_parentL = acumulated_sum(parent->m_ptr_left);
@@ -282,9 +267,6 @@ private:
             if (tempA->m_ptr_left != nullptr) {
                 tempA->m_ptr_left->m_prize2 = acumulated_sum(tempA->m_ptr_left);
             }
-            /*if (parent->m_ptr_right != nullptr) {
-                parent->m_ptr_right->m_prize2 = acumulated_sum(parent->m_ptr_right);
-            }*/
             if (parent->m_ptr_left != nullptr) {
                 parent->m_ptr_left->m_prize2 = acumulated_sum(parent->m_ptr_left);
             }
@@ -647,11 +629,11 @@ public:
                 ptr_main_root = nullptr;
             }
 
-                // if ptr_v is a left son
+            // if ptr_v is a left son
             else if (temp->m_ptr_left == ptr_v) {
                 temp->m_ptr_left = nullptr;
             }
-                // if ptr_v is a right son
+            // if ptr_v is a right son
             else {
                 temp->m_ptr_right = nullptr;
             }
@@ -660,7 +642,7 @@ public:
             delete ptr_v;
         }
 
-            // if ptr_v has only left son
+        // if ptr_v has only left son
         else if (ptr_v->m_ptr_left != nullptr && ptr_v->m_ptr_right == nullptr) {
             if (temp == nullptr) {
                 ptr_main_root = ptr_v->m_ptr_left;
@@ -679,7 +661,7 @@ public:
             delete ptr_v;
         }
 
-            // if ptr_v has only right son
+        // if ptr_v has only right son
         else if (ptr_v->m_ptr_left == nullptr && ptr_v->m_ptr_right != nullptr) {
             //cout << "remove | case 3 "<< endl;
             if (temp == nullptr) {
@@ -699,7 +681,7 @@ public:
             delete ptr_v;
         }
 
-            // if ptr_v has both sons
+        // if ptr_v has both sons
         else {
             Node* ptr_w = find_next_inorder(main_root, ptr_v);
 
@@ -716,7 +698,7 @@ public:
                     temp->m_ptr_left = nullptr;
                 }
 
-                    // if ptr_w is a right son
+                // if ptr_w is a right son
                 else {
                     temp->m_ptr_right = nullptr;
                 }
@@ -725,7 +707,7 @@ public:
                 delete ptr_w;
             }
 
-                // if ptr_w has only left son
+            // if ptr_w has only left son
             else if (ptr_w->m_ptr_left != nullptr && ptr_w->m_ptr_right == nullptr) {
 
                 // checks if ptr_w is a left son or a right son to his father
@@ -741,7 +723,7 @@ public:
                 delete ptr_w;
             }
 
-                // if ptr_w has only right son
+            // if ptr_w has only right son
             else if (ptr_w->m_ptr_left == nullptr && ptr_w->m_ptr_right != nullptr) {
 
                 // checks if ptr_w is a left son or a right son to his father
@@ -804,8 +786,8 @@ public:
         recursive_update(main_root ,curr->m_ptr_father);
     }
 
-// we don't need this function anymore because we save a pointer to a father in each node ??
-// assuming there is at least one node in a tree
+    // we don't need this function anymore because we save a pointer to a father in each node ??
+    // assuming there is at least one node in a tree
     //a function that gets a pointer to a sun and return a pointer to his father
     Node* find_father(Node* node_ptr, int val_of_son) {
         // checks right branch
@@ -819,7 +801,7 @@ public:
             }
         }
 
-            // checks left branch
+        // checks left branch
         else if (val_of_son < node_ptr->m_data) {
             if ((node_ptr->m_ptr_left != nullptr) && (node_ptr->m_ptr_left->m_data == val_of_son)) {
                 return node_ptr;
@@ -830,14 +812,14 @@ public:
             }
         }
 
-            // we tried to find a father of a root and there isn't any
+        // we tried to find a father of a root and there isn't any
         else {
             return nullptr;
         }
     }
 
-//the function is getting a right leaf and returns his legal father
-//the function finds the father in order (or grandfather) (or grand - grand father)
+    //the function is getting a right leaf and returns his legal father
+    //the function finds the father in order (or grandfather) (or grand - grand father)
     Node* distant_grandfather_inorder(Node* ptr_node, Node* ptr_node_v) {
 
         if (ptr_node_v->m_ptr_father == nullptr) { //the right leaf in the edge has no father
@@ -863,7 +845,7 @@ public:
             return node_ptr_v->m_ptr_father;
         }
 
-            // if node_ptr_v->m_ptr_right != nullptr
+        // if node_ptr_v->m_ptr_right != nullptr
         else if (node_ptr_v->m_ptr_right != nullptr) {
             return distant_son(node_ptr_v->m_ptr_right);
         }
@@ -874,7 +856,7 @@ public:
     }
 
 
-// returns the leftmost leaf of a current node
+    // returns the leftmost leaf of a current node
     Node* distant_son(Node* node_ptr_v) {
         if (node_ptr_v->m_ptr_left == nullptr) {
             return node_ptr_v;
@@ -892,38 +874,11 @@ public:
         sum += curr_node->getPrize();
         return sum;
     }
-    void printRankTree(const RankTree<T>& avl) {
-        if (avl.ptr_main_root == nullptr) {
-            cout << "The tree is empty." << endl;
-            return;
-        }
-
-        cout << "RankTree:" << endl;
-        printNode(avl.ptr_main_root, "", "");
-    }
-
-    void printNode(Node* node, const string& indent, const string& arrow) {
-        if (node != nullptr) {
-            if (node->m_ptr_right != nullptr) {
-                printNode(node->m_ptr_right, indent + "     ", "  \\");
-            }
-
-            cout << indent;
-
-            cout << arrow << "── ";
-
-            cout << node->m_data << endl;
-
-            if (node->m_ptr_left != nullptr) {
-                printNode(node->m_ptr_left, indent + "     ", "  /");
-            }
-        }
-    }
 
 
-// ranked tree functions
+// RANK TREE FUNCTIONS
 
-// finds the closest value to min bound (returns val that is >= min)
+    // finds the closest value to min bound (returns val that is >= min)
     Node* find_closest_min(Node* curr_node, int val_to_find, int curr_min) {
         if (curr_node == nullptr) {
             return nullptr;
@@ -950,7 +905,7 @@ public:
         return nullptr;
     }
 
-// finds the closest value to max bound (returns val that is <= max)
+    // finds the closest value to max bound (returns val that is <= max)
     Node* find_closest_max(Node* curr_node, int val_to_find, Node* curr_max) {
         if (curr_node == nullptr) {
             return nullptr;
