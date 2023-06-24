@@ -169,12 +169,12 @@ private:
             return 0;
         }
 
-        //a pointer to a subtree with only two nodes -> (a root and a left leaf)
+            //a pointer to a subtree with only two nodes -> (a root and a left leaf)
         else if (node_ptr->m_ptr_right == nullptr) {
             return node_ptr->m_ptr_left->m_height - (-1);
         }
 
-        //a pointer to a subtree with only two nodes -> (a root and a right leaf)
+            //a pointer to a subtree with only two nodes -> (a root and a right leaf)
         else if (node_ptr->m_ptr_left == nullptr) {
             return -1-node_ptr->m_ptr_right->m_height;
         }
@@ -200,9 +200,9 @@ private:
             if (tempA->m_ptr_left != nullptr) {
                 tempA->m_ptr_left->m_prize2 = acumulated_sum(tempA->m_ptr_left);
             }
-            if (parent->m_ptr_left != nullptr) {
+            /*if (parent->m_ptr_left != nullptr) {
                 parent->m_ptr_left->m_prize2 = acumulated_sum(parent->m_ptr_left);
-            }
+            }*/
             if (parent->m_ptr_right != nullptr) {
                 parent->m_ptr_right->m_prize2 = acumulated_sum(parent->m_ptr_right);
             }
@@ -235,28 +235,29 @@ private:
             double not_updated_prize_for_Al = acumulated_sum(tempA->m_ptr_left);
             if (not_updated_prize_for_Al != tempA->m_ptr_left->m_prize2)  {
                 tempA->m_ptr_left->m_prize = tempA->m_ptr_left->m_prize2 - (not_updated_prize_for_Al -
-                        tempA->m_ptr_left->m_prize);
+                                                                            tempA->m_ptr_left->m_prize);
             }
         }
-        if (tempA->m_ptr_right != nullptr) {
+        /*if (tempA->m_ptr_right != nullptr) {
             double not_updated_prize_for_Ar = acumulated_sum(tempA->m_ptr_right);
             if (not_updated_prize_for_Ar != tempA->m_ptr_right->m_prize2)  {
                 tempA->m_ptr_right->m_prize = tempA->m_ptr_right->m_prize2 - (not_updated_prize_for_Ar -
-                                                                            tempA->m_ptr_right->m_prize);
+                                                                              tempA->m_ptr_right->m_prize);
             }
-        }
+        }*/
+        //before the rotation it was Ar
         if (parent->m_ptr_left != nullptr) {
             double not_updated_prize_for_parentL = acumulated_sum(parent->m_ptr_left);
             if (not_updated_prize_for_parentL != parent->m_ptr_left->m_prize2) {
                 parent->m_ptr_left->m_prize = parent->m_ptr_left->m_prize2 - (not_updated_prize_for_parentL -
-                        parent->m_ptr_left->m_prize);
+                                                                              parent->m_ptr_left->m_prize);
             }
         }
         if (parent->m_ptr_right != nullptr) {
             double not_updated_prize_for_parentR = acumulated_sum(parent->m_ptr_right);
             if (not_updated_prize_for_parentR != parent->m_ptr_right->m_prize2) {
                 parent->m_ptr_right->m_prize = parent->m_ptr_right->m_prize2 - (not_updated_prize_for_parentR -
-                                                                              parent->m_ptr_right->m_prize);
+                                                                                parent->m_ptr_right->m_prize);
             }
         }
 
@@ -281,9 +282,9 @@ private:
             if (tempA->m_ptr_left != nullptr) {
                 tempA->m_ptr_left->m_prize2 = acumulated_sum(tempA->m_ptr_left);
             }
-            if (parent->m_ptr_right != nullptr) {
+            /*if (parent->m_ptr_right != nullptr) {
                 parent->m_ptr_right->m_prize2 = acumulated_sum(parent->m_ptr_right);
-            }
+            }*/
             if (parent->m_ptr_left != nullptr) {
                 parent->m_ptr_left->m_prize2 = acumulated_sum(parent->m_ptr_left);
             }
@@ -316,21 +317,22 @@ private:
             double not_updated_prize_for_Ar = acumulated_sum(tempA->m_ptr_right);
             if(not_updated_prize_for_Ar != tempA->m_ptr_right->m_prize2) {
                 tempA->m_ptr_right->m_prize = tempA->m_ptr_right->m_prize2 - (not_updated_prize_for_Ar -
-                        tempA->m_ptr_right->m_prize);
+                                                                              tempA->m_ptr_right->m_prize);
             }
         }
-        if (tempA->m_ptr_left != nullptr) {
-            double not_updated_prize_for_Al = acumulated_sum(tempA->m_ptr_left);
-            if(not_updated_prize_for_Al != tempA->m_ptr_left->m_prize2) {
-                tempA->m_ptr_left->m_prize = tempA->m_ptr_left->m_prize2 - (not_updated_prize_for_Al -
-                                                                              tempA->m_ptr_left->m_prize);
+        //this is Al after rotation
+        if (parent->m_ptr_right != nullptr) {
+            double not_updated_prize_for_Br = acumulated_sum(parent->m_ptr_right);
+            if(not_updated_prize_for_Br != parent->m_ptr_right->m_prize2) {
+                parent->m_ptr_right->m_prize = parent->m_ptr_right->m_prize2 - (not_updated_prize_for_Br -
+                        parent->m_ptr_right->m_prize);
             }
         }
         if (parent->m_ptr_left != nullptr) {
             double not_updated_prize_for_Bl = acumulated_sum(parent->m_ptr_left);
             if (not_updated_prize_for_Bl != parent->m_ptr_left->m_prize2) {
                 parent->m_ptr_left->m_prize = parent->m_ptr_left->m_prize2 - (not_updated_prize_for_Bl -
-                        parent->m_ptr_left->m_prize);
+                                                                              parent->m_ptr_left->m_prize);
             }
         }
 
@@ -408,6 +410,7 @@ private:
                                                                                     parent->m_ptr_right->m_prize);
                 }
             }
+            //It was Br before rotation
             if (parent->m_ptr_left != nullptr) {
                 double not_updated_prize_for_Br = acumulated_sum(parent->m_ptr_left);
                 if (not_updated_prize_for_Br != parent->m_ptr_left->m_prize2) {
@@ -415,7 +418,7 @@ private:
                                                                                   parent->m_ptr_left->m_prize);
                 }
             }
-
+            //It was Bl before rotation
             if (tempA->m_ptr_right != nullptr) {
                 double not_updated_prize_for_Bl = acumulated_sum(tempA->m_ptr_right);
                 if (not_updated_prize_for_Bl != tempA->m_ptr_right->m_prize2) {
@@ -423,13 +426,14 @@ private:
                                                                                   -tempA->m_ptr_right->m_prize);
                 }
             }
-             if (tempA->m_ptr_left != nullptr) {
-                 double not_updated_prize_for_Al = acumulated_sum(tempA->m_ptr_left);
-                 if (not_updated_prize_for_Al != tempA->m_ptr_left->m_prize2) {
-                     tempA->m_ptr_left->m_prize = tempA->m_ptr_left->m_prize2 - (not_updated_prize_for_Al -
-                                                                                 tempA->m_ptr_left->m_prize);
-                 }
-             }
+            //it was Al before rotation
+            if (tempA->m_ptr_left != nullptr) {
+                double not_updated_prize_for_Al = acumulated_sum(tempA->m_ptr_left);
+                if (not_updated_prize_for_Al != tempA->m_ptr_left->m_prize2) {
+                    tempA->m_ptr_left->m_prize = tempA->m_ptr_left->m_prize2 - (not_updated_prize_for_Al -
+                                                                                tempA->m_ptr_left->m_prize);
+                }
+            }
         }
 
         return tempB;
@@ -509,15 +513,16 @@ private:
                                                                                   parent->m_ptr_left->m_prize);
                 }
             }
+            //It was Bl before the rotation
             if (parent->m_ptr_right != nullptr) {
                 double not_updated_prize_for_Bl = acumulated_sum(parent->m_ptr_right);
                 if (not_updated_prize_for_Bl != parent->m_ptr_right->m_prize2) {
                     parent->m_ptr_right->m_prize = parent->m_ptr_right->m_prize2 - (not_updated_prize_for_Bl -
-                                                                                  parent->m_ptr_right->m_prize);
+                                                                                    parent->m_ptr_right->m_prize);
                 }
             }
 
-
+            //It was Br before the rotation
             if (tempA->m_ptr_left != nullptr) {
                 double not_updated_prize_for_Br = acumulated_sum(tempA->m_ptr_left);
                 if (not_updated_prize_for_Br != tempA->m_ptr_left->m_prize2) {
@@ -594,7 +599,7 @@ public:
             }
 
             source = balance(source);
-            }
+        }
 
         else if ((*m_getter)(source->m_data) < (*m_getter)(key)) {
             auto temp = insert(source->m_ptr_right, key, just_inserted, updated_the_boolean);
@@ -642,11 +647,11 @@ public:
                 ptr_main_root = nullptr;
             }
 
-            // if ptr_v is a left son
+                // if ptr_v is a left son
             else if (temp->m_ptr_left == ptr_v) {
                 temp->m_ptr_left = nullptr;
             }
-            // if ptr_v is a right son
+                // if ptr_v is a right son
             else {
                 temp->m_ptr_right = nullptr;
             }
@@ -655,7 +660,7 @@ public:
             delete ptr_v;
         }
 
-        // if ptr_v has only left son
+            // if ptr_v has only left son
         else if (ptr_v->m_ptr_left != nullptr && ptr_v->m_ptr_right == nullptr) {
             if (temp == nullptr) {
                 ptr_main_root = ptr_v->m_ptr_left;
@@ -674,7 +679,7 @@ public:
             delete ptr_v;
         }
 
-        // if ptr_v has only right son
+            // if ptr_v has only right son
         else if (ptr_v->m_ptr_left == nullptr && ptr_v->m_ptr_right != nullptr) {
             //cout << "remove | case 3 "<< endl;
             if (temp == nullptr) {
@@ -694,7 +699,7 @@ public:
             delete ptr_v;
         }
 
-        // if ptr_v has both sons
+            // if ptr_v has both sons
         else {
             Node* ptr_w = find_next_inorder(main_root, ptr_v);
 
@@ -711,7 +716,7 @@ public:
                     temp->m_ptr_left = nullptr;
                 }
 
-                // if ptr_w is a right son
+                    // if ptr_w is a right son
                 else {
                     temp->m_ptr_right = nullptr;
                 }
@@ -720,7 +725,7 @@ public:
                 delete ptr_w;
             }
 
-            // if ptr_w has only left son
+                // if ptr_w has only left son
             else if (ptr_w->m_ptr_left != nullptr && ptr_w->m_ptr_right == nullptr) {
 
                 // checks if ptr_w is a left son or a right son to his father
@@ -736,7 +741,7 @@ public:
                 delete ptr_w;
             }
 
-            // if ptr_w has only right son
+                // if ptr_w has only right son
             else if (ptr_w->m_ptr_left == nullptr && ptr_w->m_ptr_right != nullptr) {
 
                 // checks if ptr_w is a left son or a right son to his father
@@ -814,7 +819,7 @@ public:
             }
         }
 
-        // checks left branch
+            // checks left branch
         else if (val_of_son < node_ptr->m_data) {
             if ((node_ptr->m_ptr_left != nullptr) && (node_ptr->m_ptr_left->m_data == val_of_son)) {
                 return node_ptr;
@@ -825,7 +830,7 @@ public:
             }
         }
 
-        // we tried to find a father of a root and there isn't any
+            // we tried to find a father of a root and there isn't any
         else {
             return nullptr;
         }
@@ -858,7 +863,7 @@ public:
             return node_ptr_v->m_ptr_father;
         }
 
-        // if node_ptr_v->m_ptr_right != nullptr
+            // if node_ptr_v->m_ptr_right != nullptr
         else if (node_ptr_v->m_ptr_right != nullptr) {
             return distant_son(node_ptr_v->m_ptr_right);
         }

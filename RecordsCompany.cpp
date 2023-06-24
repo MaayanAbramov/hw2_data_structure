@@ -107,7 +107,8 @@ StatusType RecordsCompany::makeMember(int c_id) {
         curr_customer->set_is_member(true);
         bool helper1 = false;
         bool helper2 = false;
-        m_vip_costumers.insert(m_vip_costumers.ptr_main_root, curr_customer, &helper1, &helper2);
+        m_vip_costumers.ptr_main_root = m_vip_costumers.insert(m_vip_costumers.ptr_main_root, curr_customer, &helper1,
+                                                              &helper2);
     }
     catch (std::bad_alloc& ba) {
         Customer* curr_customer = m_all_costumers.find(c_id);
@@ -174,7 +175,7 @@ StatusType RecordsCompany::addPrize(int c_id1, int c_id2, double  amount) {
     RankTree<Customer *>::Node * temp = nullptr;
     auto upper_bound = m_vip_costumers.find_closest_max(m_vip_costumers.ptr_main_root, c_id2,temp);
     temp = nullptr;
-    auto lower_bound = m_vip_costumers.find_closest_max(m_vip_costumers.ptr_main_root, c_id1, temp);
+    auto lower_bound = m_vip_costumers.find_closest_max(m_vip_costumers.ptr_main_root, c_id1-1, temp);
 
     //auto lower_bound = m_vip_costumers.find_closest_min(m_vip_costumers.ptr_main_root, c_id1, 2147483647); // was
     // c_id1 - 1
