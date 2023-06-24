@@ -71,8 +71,8 @@ Union_Find::GroupOfNodes* Union_Find::find_group(int r_id) {
 Union_Find::GroupOfNodes* Union_Find::Union(GroupOfNodes* group1, GroupOfNodes* group2) {
     //group_2 contains more elements
     if (group1->m_num_of_members < group2->m_num_of_members) {
-        Node* group1_m_ptr_root = group1->m_root;
-        Node* group2_m_ptr_root = group2->m_root;
+        auto group1_m_ptr_root = group1->m_root;
+        auto group2_m_ptr_root = group2->m_root;
 
         int temp1 = group2->m_height - group2_m_ptr_root->global_height;
         group1_m_ptr_root->global_height = group1_m_ptr_root->global_height + temp1;
@@ -89,8 +89,8 @@ Union_Find::GroupOfNodes* Union_Find::Union(GroupOfNodes* group1, GroupOfNodes* 
 
     //group_1 contains more elements
     else {
-        Node* group1_m_ptr_root = group1->m_root;
-        Node* group2_m_ptr_root = group2->m_root;
+        auto group1_m_ptr_root = group1->m_root;
+        auto group2_m_ptr_root = group2->m_root;
 
         group1_m_ptr_root->global_height = group1_m_ptr_root->global_height + group2->m_height;
         group2_m_ptr_root->global_height = group2_m_ptr_root->global_height - group1_m_ptr_root->global_height;
